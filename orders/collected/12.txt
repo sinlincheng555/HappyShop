@@ -1,0 +1,10 @@
+Order ID: 12 
+State: Collected
+OrderedDateTime: 2026-01-08 23:59:54 
+ProgressingDateTime: 2026-01-09 00:00:10
+CollectedDateTime: 2026-01-09 00:00:12
+Items:
+ 0001    Oled TV            (20) £50000.00
+--------------------------------------------
+ Total                               £50000.00
+

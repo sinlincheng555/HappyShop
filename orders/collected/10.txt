@@ -1,0 +1,13 @@
+Order ID: 10 
+State: Collected
+OrderedDateTime: 2025-10-27 11:35:09 
+ProgressingDateTime: 2025-10-27 11:35:09
+CollectedDateTime: 2025-10-27 11:35:09
+Items:
+ 0001    40 inch TV         ( 8) £2152.00
+ 0002    DAB Radio          ( 4) £ 119.96
+ 0003    Toaster            ( 4) £  79.96
+ 0004    Watch              ( 3) £  89.97
+--------------------------------------------
+ Total                               £2441.89
+
