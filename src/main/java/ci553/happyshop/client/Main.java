@@ -46,21 +46,18 @@ public class Main extends Application {
         startPickerClient();
         startOrderTracker();
 
-        startCustomerClient();
-        startPickerClient();
-        startOrderTracker();
 
         // Initializes the order map for the OrderHub. This must be called after starting the observer clients
         // (such as OrderTracker and Picker clients) to ensure they are properly registered for receiving updates.
         initializeOrderMap();
 
         startWarehouseClient();
-        startWarehouseClient();
+
 
         startEmergencyExit();
     }
 
-    /** The customer GUI -search prodduct, add to trolley, cancel/submit trolley, view receipt
+    /** The customer GUI -search product, add to trolley, cancel/submit trolley, view receipt
      *
      * Creates the Model, View, and Controller objects, links them together so they can communicate with each other.
      * Also creates the DatabaseRW instance via the DatabaseRWFactory and injects it into the CustomerModel.
