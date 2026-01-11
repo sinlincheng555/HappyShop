@@ -48,7 +48,7 @@ public class CustomerView {
     private Label laItemCount;
     private Stage viewWindow;
 
-    // ========== KEY ADDITION: Reference to UI Styles ==========
+    // ========== Reference to UI Styles ==========
     // Static import for easy access (optional but convenient)
     private static final CustomerUIStyles.Colors COLORS = new CustomerUIStyles.Colors();
     private static final CustomerUIStyles.Typography TYPO = new CustomerUIStyles.Typography();
