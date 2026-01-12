@@ -2,7 +2,6 @@ package ci553.happyshop.client.warehouse;
 
 import ci553.happyshop.catalogue.Product;
 import ci553.happyshop.storageAccess.DatabaseRW;
-import ci553.happyshop.storageAccess.DerbyRW;
 import ci553.happyshop.storageAccess.ImageFileManager;
 import ci553.happyshop.utility.StorageLocation;
 
@@ -14,6 +13,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * FIXED WarehouseModel - All issues resolved
+ */
 public class WarehouseModel {
     public WarehouseView view;
     public DatabaseRW databaseRW;
@@ -41,31 +43,41 @@ public class WarehouseModel {
     }
 
     private enum UpdateForAction {
-        // Search Page actions
         BTN_SEARCH,
+        BTN_LOAD_ALL,
         BTN_EDIT,
         BTN_DELETE,
-
-        // Edit Product actions
         BTN_CHANGE_STOCK_BY,
         BTN_SUBMIT_EDIT,
         BTN_CANCEL_EDIT,
-
-        // Add New Product actions
         BTN_CANCEL_NEW,
         BTN_SUBMIT_NEW,
-
-        // Error handling
         SHOW_INPUT_ERROR_MSG
     }
 
     /**
-     * Initializes the model with database connection
+     * NEW: Load all products (for initial display)
      */
-    public void initialize() throws SQLException {
-        if (databaseRW == null) {
-            databaseRW = new DerbyRW(); // Default implementation
+    void doLoadAll() throws SQLException {
+        System.out.println("Loading all products...");
+        // Get all products by searching with wildcard or getting all IDs
+        productList.clear();
+
+        // Try to load products with IDs from 0001 to 0100
+        for (int i = 1; i <= 100; i++) {
+            String productId = String.format("%04d", i);
+            try {
+                Product product = databaseRW.searchByProductId(productId);
+                if (product != null) {
+                    productList.add(product);
+                }
+            } catch (SQLException e) {
+                // Product doesn't exist, continue
+            }
         }
+
+        System.out.println("Loaded " + productList.size() + " products");
+        updateView(UpdateForAction.BTN_LOAD_ALL);
     }
 
     /**
@@ -73,11 +85,15 @@ public class WarehouseModel {
      */
     void doSearch() throws SQLException {
         String keyword = view.tfSearchKeyword.getText().trim();
+        System.out.println("Searching for: '" + keyword + "'");
+
         if (!keyword.isEmpty()) {
             productList = databaseRW.searchProduct(keyword);
+            System.out.println("Found " + productList.size() + " products");
         } else {
-            productList.clear();
-            showAlert("Please enter a product ID or name to search", "Search Error");
+            // If empty search, load all products
+            doLoadAll();
+            return;
         }
         updateView(UpdateForAction.BTN_SEARCH);
     }
@@ -97,7 +113,11 @@ public class WarehouseModel {
             // Delete image file
             String imageName = theSelectedPro.getProductImageName();
             if (imageName != null && !imageName.isEmpty()) {
-                ImageFileManager.deleteImageFile(StorageLocation.imageFolder, imageName);
+                try {
+                    ImageFileManager.deleteImageFile(StorageLocation.imageFolder, imageName);
+                } catch (IOException e) {
+                    System.err.println("Warning: Could not delete image file: " + e.getMessage());
+                }
             }
 
             updateView(UpdateForAction.BTN_DELETE);
@@ -148,6 +168,7 @@ public class WarehouseModel {
      * Submits form based on current mode (edit or add new)
      */
     void doSummit() throws SQLException, IOException {
+        System.out.println("Submit called, mode: " + view.theProFormMode);
         if (view.theProFormMode.equals("EDIT")) {
             doSubmitEdit();
         } else if (view.theProFormMode.equals("NEW")) {
@@ -167,11 +188,18 @@ public class WarehouseModel {
             String textStock = view.tfStockEdit.getText().trim();
             String description = view.taDescriptionEdit.getText().trim();
 
+            System.out.println("Submitting edit for product: " + id);
+            System.out.println("Price: " + textPrice + ", Stock: " + textStock);
+
             // Handle image changes
             String newImageName = currentImageName;
             if (view.isUserSelectedImageEdit) {
                 // Delete old image
-                ImageFileManager.deleteImageFile(StorageLocation.imageFolder, currentImageName);
+                try {
+                    ImageFileManager.deleteImageFile(StorageLocation.imageFolder, currentImageName);
+                } catch (IOException e) {
+                    System.err.println("Warning: Could not delete old image: " + e.getMessage());
+                }
 
                 // Copy new image
                 newImageName = ImageFileManager.copyFileToDestination(
@@ -198,6 +226,9 @@ public class WarehouseModel {
             updateView(UpdateForAction.BTN_SUBMIT_EDIT);
             theSelectedPro = null;
             showAlert("Product updated successfully", "Success");
+
+            // Reload all products to show updated data
+            doLoadAll();
         } else {
             showAlert("No product selected for editing", "Selection Error");
         }
@@ -275,6 +306,13 @@ public class WarehouseModel {
         String description = view.taDescriptionNewPro.getText().trim();
         String imagePath = view.imageUriNewPro;
 
+        System.out.println("Submitting new product:");
+        System.out.println("ID: " + theNewProId);
+        System.out.println("Price: " + textPrice);
+        System.out.println("Stock: " + textStock);
+        System.out.println("Description: " + description);
+        System.out.println("Image: " + imagePath);
+
         // Validate input
         if (!validateInputNewProChild(theNewProId, textPrice, textStock, description, imagePath)) {
             updateView(UpdateForAction.SHOW_INPUT_ERROR_MSG);
@@ -299,6 +337,9 @@ public class WarehouseModel {
         updateView(UpdateForAction.BTN_SUBMIT_NEW);
         theNewProId = null;
         showAlert("New product added successfully", "Success");
+
+        // Reload all products to show new product
+        doLoadAll();
     }
 
     /**
@@ -393,7 +434,7 @@ public class WarehouseModel {
         }
 
         // Validate image
-        if (imageUri == null) {
+        if (imageUri == null || imageUri.isEmpty()) {
             errorMessage.append("• Please select an image for the product.\n");
         }
 
@@ -409,6 +450,7 @@ public class WarehouseModel {
      */
     private void updateView(UpdateForAction updateFor) {
         switch (updateFor) {
+            case BTN_LOAD_ALL:
             case BTN_SEARCH:
                 view.updateObservableProductList(productList);
                 break;
@@ -469,7 +511,7 @@ public class WarehouseModel {
                 if (theSelectedPro != null) {
                     record = String.format("✓ Edited product %s - %s (%s)",
                             theSelectedPro.getProductId(),
-                            theSelectedPro.getProductName(),
+                            theSelectedPro.getProductDescription(),
                             dateTime);
                 }
                 break;
@@ -477,7 +519,7 @@ public class WarehouseModel {
                 if (theSelectedPro != null) {
                     record = String.format("✗ Deleted product %s - %s (%s)",
                             theSelectedPro.getProductId(),
-                            theSelectedPro.getProductName(),
+                            theSelectedPro.getProductDescription(),
                             dateTime);
                 }
                 break;
@@ -499,7 +541,7 @@ public class WarehouseModel {
     }
 
     /**
-     * Shows an alert message (utility method)
+     * Shows an alert message
      */
     private void showAlert(String message, String title) {
         if (alertSimulator != null) {
@@ -516,30 +558,5 @@ public class WarehouseModel {
         if (alertSimulator != null) {
             alertSimulator.closeAlertSimulatorWindow();
         }
-    }
-
-    /**
-     * Gets the current product list (for testing/debugging)
-     */
-    public ArrayList<Product> getProductList() {
-        return new ArrayList<>(productList);
-    }
-
-    /**
-     * Gets the current manage history (for testing/debugging)
-     */
-    public ArrayList<String> getManageHistory() {
-        return new ArrayList<>(displayManageHistory);
-    }
-
-    /**
-     * Clears all data (for testing/reset)
-     */
-    public void clearAllData() {
-        productList.clear();
-        displayManageHistory.clear();
-        theSelectedPro = null;
-        theNewProId = null;
-        displayInputErrorMsg = "";
     }
 }

@@ -4,34 +4,31 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * WarehouseController - Fixed to handle all button actions
+ * WarehouseController - FIXED to handle all actions correctly
  * Routes user actions from WarehouseView to WarehouseModel
- *
- * Handles:
- * - Search functionality (🔍 button and Enter key)
- * - Edit product actions
- * - Delete product actions
- * - Stock adjustment (➕ ➖ buttons)
- * - Submit/Cancel operations
- * - Dashboard refresh
  */
 public class WarehouseController {
     public WarehouseModel model;
 
     /**
      * Process user actions from the view
-     *
-     * @param action The action string from button text or keyboard event
-     * @throws SQLException If database operation fails
-     * @throws IOException If file operation fails
      */
     void process(String action) throws SQLException, IOException {
-        // Normalize action string (handle emoji and text variations)
-        String normalizedAction = normalizeAction(action);
+        if (model == null) {
+            System.err.println("ERROR: Model is not initialized!");
+            return;
+        }
 
-        System.out.println("Controller processing action: " + normalizedAction);
+        // Normalize action string
+        String normalizedAction = normalizeAction(action);
+        System.out.println("Controller processing action: " + normalizedAction + " (original: " + action + ")");
 
         switch (normalizedAction) {
+            case "LOAD_ALL":
+                // Load all products on startup
+                model.doLoadAll();
+                break;
+
             case "SEARCH":
                 model.doSearch();
                 break;
@@ -54,7 +51,7 @@ public class WarehouseController {
 
             case "SUBMIT":
                 model.doSummit();
-                // Refresh dashboard if it exists
+                // Refresh dashboard after submit
                 if (model.view != null) {
                     model.view.refreshDashboard();
                 }
@@ -65,22 +62,17 @@ public class WarehouseController {
                 break;
 
             case "DASHBOARD":
-                // Dashboard is handled directly in view
-                // But we could add analytics here if needed
                 System.out.println("Dashboard opened");
                 break;
 
             default:
-                System.out.println("Unknown action: " + action);
+                System.out.println("Unknown action: " + action + " (normalized: " + normalizedAction + ")");
                 break;
         }
     }
 
     /**
      * Normalize action strings to handle emoji buttons and variations
-     *
-     * @param action Raw action string from button
-     * @return Normalized action string
      */
     private String normalizeAction(String action) {
         if (action == null || action.trim().isEmpty()) {
@@ -90,32 +82,33 @@ public class WarehouseController {
         // Remove emojis and extra spaces, convert to uppercase
         String normalized = action.trim().toUpperCase();
 
-        // Handle emoji buttons
-        if (normalized.contains("🔍") || normalized.contains("SEARCH")) {
+        // Handle emoji buttons and text variations
+        if (normalized.contains("🔎") || normalized.contains("🔍") || normalized.contains("SEARCH")) {
             return "SEARCH";
         }
-        if (normalized.contains("➕") || normalized.equals("+")) {
+        if (normalized.equals("➕") || normalized.equals("+")) {
             return "ADD";
         }
-        if (normalized.contains("➖") || normalized.equals("-") || normalized.equals("−")) {
+        if (normalized.equals("➖") || normalized.equals("-") || normalized.equals("−")) {
             return "SUB";
         }
         if (normalized.contains("📊") || normalized.contains("DASHBOARD")) {
             return "DASHBOARD";
         }
-
-        // Handle text buttons
-        if (normalized.equals("EDIT")) {
+        if (normalized.contains("✏️") || normalized.contains("EDIT")) {
             return "EDIT";
         }
-        if (normalized.equals("DELETE")) {
+        if (normalized.contains("🗑️") || normalized.contains("DELETE")) {
             return "DELETE";
         }
-        if (normalized.equals("SUBMIT")) {
+        if (normalized.contains("💾") || normalized.contains("SUBMIT")) {
             return "SUBMIT";
         }
-        if (normalized.equals("CANCEL")) {
+        if (normalized.contains("CANCEL")) {
             return "CANCEL";
+        }
+        if (normalized.equals("LOAD_ALL")) {
+            return "LOAD_ALL";
         }
 
         // Return original if no match
@@ -124,25 +117,14 @@ public class WarehouseController {
 
     /**
      * Handle errors gracefully
-     *
-     * @param action The action that caused the error
-     * @param e The exception that occurred
      */
     public void handleError(String action, Exception e) {
         System.err.println("Error processing action '" + action + "': " + e.getMessage());
         e.printStackTrace();
-
-        // You could show error dialog here if needed
-        // Alert alert = new Alert(Alert.AlertType.ERROR);
-        // alert.setTitle("Operation Failed");
-        // alert.setContentText("Failed to " + action + ": " + e.getMessage());
-        // alert.showAndWait();
     }
 
     /**
      * Validate that model is properly initialized
-     *
-     * @return true if model is ready, false otherwise
      */
     public boolean isModelReady() {
         if (model == null) {
@@ -150,29 +132,5 @@ public class WarehouseController {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Safe process method that checks model initialization
-     *
-     * @param action The action to process
-     */
-    public void safeProcess(String action) {
-        try {
-            if (!isModelReady()) {
-                System.err.println("Cannot process action - model not ready");
-                return;
-            }
-            process(action);
-        } catch (SQLException e) {
-            handleError(action, e);
-            System.err.println("Database error: " + e.getSQLState());
-        } catch (IOException e) {
-            handleError(action, e);
-            System.err.println("File operation error: " + e.getMessage());
-        } catch (Exception e) {
-            handleError(action, e);
-            System.err.println("Unexpected error: " + e.getMessage());
-        }
     }
 }
