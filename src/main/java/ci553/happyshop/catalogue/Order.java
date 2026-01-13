@@ -5,31 +5,6 @@ import ci553.happyshop.utility.ProductListFormatter;
 
 import java.util.ArrayList;
 
-/**
- * The Order class represents a customer order, including metadata and a list of ordered products.
- *
- * Responsibilities:
- * - sotres information about an order, including order ID, current order state, timestamps, and the list of products.
- * - Provides getter methods for order attributes and allows updating the order state.
- * - Formats the full order details for writing to a file, including timestamps and item list.
- *
- * An order file example:
- * Order ID: 10
- * State: Ordered
- * OrderedDateTime: 2025-05-03 16:52:24
- * ProgressingDateTime:
- * CollectedDateTime:
- * Items:
- *  0002    DAB Radio          ( 1) £  29.99
- *  0004    Watch              ( 1) £  29.99
- *  0007    USB drive          ( 1) £   6.99
- * --------------------------------------------
- *  Total                               £  66.97
- *
- * This class is mainly used by OrderHub to create and manage order objects during
- * the order lifecycle (ordered → progressing → collected).
- */
-
 public class Order {
     private int orderId;
     private OrderState state;
