@@ -1,5 +1,6 @@
 package ci553.happyshop.systemSetup;
 
+import ci553.happyshop.auth.PasswordHasher;
 import ci553.happyshop.storageAccess.DatabaseRWFactory;
 import ci553.happyshop.utility.StorageLocation;
 
@@ -10,23 +11,13 @@ import java.sql.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Enhanced SetDatabase with maxStock column support.
- *
- * Key Enhancement:
- * - ProductTable now includes maxStock column for stock level tracking
- * - Enables low stock warnings when inventory falls below 10%
- *
- * WARNING: This class resets the entire database to a clean state.
- * All existing data will be lost.
- */
 public class SetDatabase {
 
     private static final String dbURL = DatabaseRWFactory.dbURL + ";create=true";
     private static Path imageWorkingFolderPath = StorageLocation.imageFolderPath;
     private static Path imageBackupFolderPath = StorageLocation.imageResetFolderPath;
 
-    private String[] tables = {"ProductTable"};
+    private String[] tables = {"ProductTable", "UserTable"};
     private static final Lock lock = new ReentrantLock();
 
     public static void main(String[] args) throws SQLException, IOException {
@@ -58,26 +49,35 @@ public class SetDatabase {
         }
     }
 
-    /**
-     * Creates ProductTable with maxStock column and initializes with sample data.
-     */
     private void initializeTable() throws SQLException {
         lock.lock();
 
         String[] iniTableSQL = {
-                // Create ProductTable with maxStock column
+                // Create ProductTable
                 "CREATE TABLE ProductTable(" +
                         "productID CHAR(4) PRIMARY KEY," +
                         "description VARCHAR(100)," +
                         "unitPrice DOUBLE," +
                         "image VARCHAR(100)," +
                         "inStock INT," +
-                        "maxStock INT," +  // NEW COLUMN
+                        "maxStock INT," +
                         "CHECK (inStock >= 0)," +
                         "CHECK (maxStock >= 0)" +
                         ")",
 
-                // Insert sample data (inStock, maxStock)
+                // Create UserTable
+                "CREATE TABLE UserTable(" +
+                        "username VARCHAR(50) PRIMARY KEY," +
+                        "passwordHash VARCHAR(255) NOT NULL," +
+                        "email VARCHAR(100)," +
+                        "fullName VARCHAR(100)," +
+                        "role VARCHAR(20) NOT NULL," +
+                        "createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                        "lastLogin TIMESTAMP," +
+                        "isActive BOOLEAN DEFAULT TRUE" +
+                        ")",
+
+                // Insert products
                 "INSERT INTO ProductTable VALUES('0001', '40 inch TV', 269.00, '0001.jpg', 100, 100)",
                 "INSERT INTO ProductTable VALUES('0002', 'DAB Radio', 29.99, '0002.jpg', 50, 100)",
                 "INSERT INTO ProductTable VALUES('0003', 'Toaster', 19.99, '0003.jpg', 25, 100)",
@@ -97,21 +97,31 @@ public class SetDatabase {
             connection.setAutoCommit(false);
 
             try (Statement statement = connection.createStatement()) {
+                // Create tables
                 statement.executeUpdate(iniTableSQL[0]);
+                statement.executeUpdate(iniTableSQL[1]);
 
-                for (int i = 1; i < iniTableSQL.length; i++) {
+                // Insert products
+                for (int i = 2; i < iniTableSQL.length; i++) {
                     statement.addBatch(iniTableSQL[i]);
                 }
-
                 statement.executeBatch();
+
+                // Insert users with hashed passwords
+                insertUser(connection, "admin1234", "admin1234", "admin@happyshop.com", "Administrator", "ADMIN");
+                insertUser(connection, "staff1234", "staff1234", "staff@happyshop.com", "Warehouse Staff", "STAFF");
+
                 connection.commit();
 
-                System.out.println("Table and data initialized successfully.");
-                System.out.println("Sample data includes products with various stock levels:");
-                System.out.println("- High stock (>30%): Products 0001, 0006, 0007, 0012");
-                System.out.println("- Medium stock (10-30%): Products 0002, 0003, 0008");
-                System.out.println("- Low stock (≤10%): Products 0004, 0005, 0009, 0010");
-                System.out.println("- Out of stock: Product 0011");
+                System.out.println("\n✅ Tables created successfully");
+                System.out.println("✅ 12 products inserted");
+                System.out.println("✅ 2 default accounts created\n");
+                System.out.println("═══════════════════════════════════════");
+                System.out.println("  Default Warehouse Accounts");
+                System.out.println("═══════════════════════════════════════");
+                System.out.println("👑 Admin:  admin1234 / admin1234");
+                System.out.println("🧑‍💼 Staff:  staff1234 / staff1234");
+                System.out.println("═══════════════════════════════════════\n");
 
             } catch (SQLException e) {
                 connection.rollback();
@@ -123,18 +133,30 @@ public class SetDatabase {
         }
     }
 
+    private void insertUser(Connection conn, String username, String password, String email, String fullName, String role) throws SQLException {
+        String insertUserSQL = "INSERT INTO UserTable (username, passwordHash, email, fullName, role, isActive) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(insertUserSQL)) {
+            String passwordHash = PasswordHasher.hashPassword(password);
+
+            stmt.setString(1, username);
+            stmt.setString(2, passwordHash);
+            stmt.setString(3, email);
+            stmt.setString(4, fullName);
+            stmt.setString(5, role);
+            stmt.setBoolean(6, true);
+
+            stmt.executeUpdate();
+        }
+    }
+
     private void queryTableAfterInitilization() throws SQLException {
         lock.lock();
-        String sqlQuery = "SELECT * FROM ProductTable";
 
-        System.out.println("-------------Product Information Below -----------------");
+        System.out.println("═══════════════ Product Table ═══════════════");
+        String sqlQuery = "SELECT * FROM ProductTable";
         String title = String.format("%-12s %-20s %-10s %-10s %-10s %s",
-                "productID",
-                "description",
-                "unitPrice",
-                "inStock",
-                "maxStock",
-                "image");
+                "productID", "description", "unitPrice", "inStock", "maxStock", "image");
         System.out.println(title);
 
         try (Connection connection = DriverManager.getConnection(dbURL);
@@ -149,6 +171,29 @@ public class SetDatabase {
                 int maxStock = resultSet.getInt("maxStock");
                 String record = String.format("%-12s %-20s %-10.2f %-10d %-10d %s",
                         productID, description, unitPrice, inStock, maxStock, image);
+                System.out.println(record);
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        System.out.println("\n═══════════════ User Table ═══════════════");
+        String userQuery = "SELECT username, email, fullName, role FROM UserTable";
+        String userTitle = String.format("%-15s %-25s %-20s %s",
+                "Username", "Email", "Full Name", "Role");
+        System.out.println(userTitle);
+
+        lock.lock();
+        try (Connection connection = DriverManager.getConnection(dbURL);
+             Statement stat = connection.createStatement()) {
+            ResultSet resultSet = stat.executeQuery(userQuery);
+            while (resultSet.next()) {
+                String username = resultSet.getString("username");
+                String email = resultSet.getString("email");
+                String fullName = resultSet.getString("fullName");
+                String role = resultSet.getString("role");
+                String record = String.format("%-15s %-25s %-20s %s",
+                        username, email, fullName, role);
                 System.out.println(record);
             }
         } finally {

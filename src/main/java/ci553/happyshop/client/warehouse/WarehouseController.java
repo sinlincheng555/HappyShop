@@ -1,17 +1,38 @@
 package ci553.happyshop.client.warehouse;
 
+import ci553.happyshop.auth.AuthenticationManager;
+import ci553.happyshop.auth.User;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * WarehouseController - FIXED to handle all actions correctly
- * Routes user actions from WarehouseView to WarehouseModel
+ * WarehouseController with Role-Based Access Control (RBAC)
+ *
+ * Routes user actions and enforces permissions based on user role:
+ *
+ * STAFF Permissions:
+ * - ✅ Search products
+ * - ✅ View stock dashboard
+ * - ✅ Add/subtract stock (canUpdateStock)
+ * - ✅ Add new products
+ * - ❌ CANNOT edit prices
+ * - ❌ CANNOT delete products
+ *
+ * ADMIN Permissions:
+ * - ✅ All staff permissions
+ * - ✅ Edit prices
+ * - ✅ Delete products
+ * - ✅ Full control
+ *
+ * @author HappyShop Development Team
+ * @version 2.0
  */
 public class WarehouseController {
     public WarehouseModel model;
 
     /**
-     * Process user actions from the view
+     * Process user actions with role-based permission checks
      */
     void process(String action) throws SQLException, IOException {
         if (model == null) {
@@ -19,38 +40,66 @@ public class WarehouseController {
             return;
         }
 
+        // Get current user
+        User currentUser = AuthenticationManager.getInstance().getCurrentUser();
+
+        if (currentUser == null) {
+            System.err.println("ERROR: No user logged in!");
+            showAccessDenied("You must be logged in to perform this action.");
+            return;
+        }
+
         // Normalize action string
         String normalizedAction = normalizeAction(action);
-        System.out.println("Controller processing action: " + normalizedAction + " (original: " + action + ")");
+        System.out.println("Controller processing action: " + normalizedAction +
+                " | User: " + currentUser.getUsername() +
+                " | Role: " + currentUser.getRole());
 
+        // Route action with permission checks
         switch (normalizedAction) {
             case "LOAD_ALL":
-                // Load all products on startup
+                // All warehouse users can load products
                 model.doLoadAll();
                 break;
 
             case "SEARCH":
+                // All warehouse users can search
                 model.doSearch();
                 break;
 
             case "EDIT":
+                // All warehouse users can initiate edit (but price editing is restricted in model)
                 model.doEdit();
                 break;
 
             case "DELETE":
-                model.doDelete();
+                // ADMIN ONLY - Delete products
+                if (currentUser.canDeleteProducts()) {
+                    model.doDelete();
+                } else {
+                    showAccessDenied("Only administrators can delete products.");
+                    System.out.println("⛔ Access denied: " + currentUser.getUsername() +
+                            " (STAFF) cannot delete products");
+                }
                 break;
 
             case "ADD":
-                model.doChangeStockBy("add");
-                break;
-
             case "SUB":
-                model.doChangeStockBy("sub");
+                // ⭐ FIXED: Both STAFF and ADMIN can modify stock using canUpdateStock()
+                if (currentUser.canUpdateStock()) {
+                    model.doChangeStockBy(normalizedAction.equals("ADD") ? "add" : "sub");
+                    System.out.println("✅ Stock modification allowed for " + currentUser.getRole());
+                } else {
+                    showAccessDenied("You don't have permission to modify stock.");
+                    System.out.println("⛔ Access denied: " + currentUser.getUsername() +
+                            " cannot modify stock");
+                }
                 break;
 
             case "SUBMIT":
+                // Submit with permission validation
                 model.doSummit();
+
                 // Refresh dashboard after submit
                 if (model.view != null) {
                     model.view.refreshDashboard();
@@ -62,7 +111,8 @@ public class WarehouseController {
                 break;
 
             case "DASHBOARD":
-                System.out.println("Dashboard opened");
+                // All warehouse users can view dashboard
+                System.out.println("Dashboard opened by " + currentUser.getRole());
                 break;
 
             default:
@@ -116,11 +166,26 @@ public class WarehouseController {
     }
 
     /**
+     * Shows access denied message to user
+     */
+    private void showAccessDenied(String message) {
+        if (model != null && model.alertSimulator != null) {
+            model.alertSimulator.showErrorMsg("⛔ Access Denied\n\n" + message);
+        } else {
+            System.err.println("⛔ Access Denied: " + message);
+        }
+    }
+
+    /**
      * Handle errors gracefully
      */
     public void handleError(String action, Exception e) {
         System.err.println("Error processing action '" + action + "': " + e.getMessage());
         e.printStackTrace();
+
+        if (model != null && model.alertSimulator != null) {
+            model.alertSimulator.showErrorMsg("Error: " + e.getMessage());
+        }
     }
 
     /**
@@ -132,5 +197,45 @@ public class WarehouseController {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Check if current user can modify prices
+     */
+    public boolean canModifyPrices() {
+        User user = AuthenticationManager.getInstance().getCurrentUser();
+        return user != null && user.canModifyPrices();
+    }
+
+    /**
+     * Check if current user can delete products
+     */
+    public boolean canDeleteProducts() {
+        User user = AuthenticationManager.getInstance().getCurrentUser();
+        return user != null && user.canDeleteProducts();
+    }
+
+    /**
+     * Check if current user can add products
+     */
+    public boolean canAddProducts() {
+        User user = AuthenticationManager.getInstance().getCurrentUser();
+        return user != null && user.canAddProducts();
+    }
+
+    /**
+     * ⭐ ADDED: Check if current user can update stock
+     */
+    public boolean canUpdateStock() {
+        User user = AuthenticationManager.getInstance().getCurrentUser();
+        return user != null && user.canUpdateStock();
+    }
+
+    /**
+     * Get current user role display name
+     */
+    public String getCurrentUserRole() {
+        User user = AuthenticationManager.getInstance().getCurrentUser();
+        return user != null ? user.getRole().getDisplayName() : "Unknown";
     }
 }
