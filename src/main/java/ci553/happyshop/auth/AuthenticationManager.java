@@ -35,13 +35,38 @@ public class AuthenticationManager {
             User user = userDatabase.authenticateUser(username, password);
             if (user != null) {
                 this.currentUser = user;
-                System.out.println("✅ Login successful: " + username);
+                System.out.println("Login successful: " + username);
             } else {
-                System.out.println("❌ Login failed: " + username);
+                System.out.println("Login failed: Invalid credentials for " + username);
             }
             return user;
         } catch (SQLException e) {
-            System.err.println("❌ Login error: " + e.getMessage());
+            System.err.println("===========================================");
+            System.err.println("DATABASE ERROR DURING LOGIN");
+            System.err.println("===========================================");
+            System.err.println("Error message: " + e.getMessage());
+            System.err.println("SQL State: " + e.getSQLState());
+            System.err.println("Error Code: " + e.getErrorCode());
+            System.err.println();
+
+            // Provide helpful hints based on error
+            if (e.getSQLState() != null) {
+                if (e.getSQLState().equals("XJ004")) {
+                    System.err.println("CAUSE: Database not found!");
+                    System.err.println("SOLUTION: Run SetDatabaseWithAuth.java to create the database");
+                } else if (e.getSQLState().equals("42X05")) {
+                    System.err.println("CAUSE: UserTable does not exist!");
+                    System.err.println("SOLUTION: Run SetDatabaseWithAuth.java to initialize tables");
+                } else if (e.getSQLState().equals("42Y07")) {
+                    System.err.println("CAUSE: UserTable schema mismatch!");
+                    System.err.println("SOLUTION: Run SetDatabaseWithAuth.java to recreate tables");
+                } else {
+                    System.err.println("SOLUTION: Check console output or run DatabaseDiagnostic.java");
+                }
+            }
+
+            System.err.println("===========================================");
+            e.printStackTrace();
             return null;
         }
     }
@@ -80,7 +105,8 @@ public class AuthenticationManager {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Registration error: " + e.getMessage());
+            System.err.println("Registration error: " + e.getMessage());
+            e.printStackTrace();
             return new RegistrationResult(false, "Database error: " + e.getMessage());
         }
     }
@@ -97,7 +123,7 @@ public class AuthenticationManager {
      */
     public void logout() {
         if (currentUser != null) {
-            System.out.println("👋 Logout: " + currentUser.getUsername());
+            System.out.println("Logout: " + currentUser.getUsername());
             currentUser = null;
         }
     }
@@ -120,7 +146,7 @@ public class AuthenticationManager {
         try {
             // Verify old password
             if (!PasswordHasher.verifyPassword(oldPassword, currentUser.getPasswordHash())) {
-                System.out.println("❌ Old password incorrect");
+                System.out.println("Old password incorrect");
                 return false;
             }
 
@@ -130,13 +156,13 @@ public class AuthenticationManager {
             if (success) {
                 // Update current user's password hash
                 currentUser.setPasswordHash(PasswordHasher.hashPassword(newPassword));
-                System.out.println("✅ Password changed successfully");
+                System.out.println("Password changed successfully");
             }
 
             return success;
 
         } catch (SQLException e) {
-            System.err.println("❌ Password change error: " + e.getMessage());
+            System.err.println("Password change error: " + e.getMessage());
             return false;
         }
     }

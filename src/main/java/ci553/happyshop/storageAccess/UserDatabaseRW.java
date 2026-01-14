@@ -17,7 +17,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version 2.0
  */
 public class UserDatabaseRW {
-
     private static final String dbURL = DatabaseRWFactory.dbURL;
     private static final Lock lock = new ReentrantLock();
 
@@ -39,7 +38,7 @@ public class UserDatabaseRW {
                     boolean isActive = rs.getBoolean("isActive");
 
                     if (!isActive) {
-                        System.out.println("⚠️  Account inactive: " + username);
+                        System.out.println("âš ï¸  Account inactive: " + username);
                         return null;
                     }
 
@@ -58,17 +57,17 @@ public class UserDatabaseRW {
 
         if (user != null && PasswordHasher.verifyPassword(password, user.getPasswordHash())) {
             updateLastLogin(username);
-            System.out.println("✅ Auth successful: " + username);
+            System.out.println("âœ… Auth successful: " + username);
             return user;
         }
 
-        System.out.println("❌ Auth failed: " + username);
+        System.out.println("Auth failed: " + username);
         return null;
     }
 
     public boolean registerUser(String username, String password, String email, String fullName, UserRole role) throws SQLException {
         if (usernameExists(username)) {
-            System.out.println("❌ Username exists: " + username);
+            System.out.println("âŒ Username exists: " + username);
             return false;
         }
 
@@ -87,7 +86,7 @@ public class UserDatabaseRW {
             stmt.setBoolean(6, true);
 
             int rows = stmt.executeUpdate();
-            System.out.println(rows > 0 ? "✅ Registered: " + username : "❌ Registration failed");
+            System.out.println(rows > 0 ? "âœ… Registered: " + username : "âŒ Registration failed");
             return rows > 0;
         } finally {
             lock.unlock();
@@ -120,7 +119,7 @@ public class UserDatabaseRW {
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            System.err.println("⚠️  Last login update failed: " + username);
+            System.err.println("âš ï¸  Last login update failed: " + username);
         } finally {
             lock.unlock();
         }
@@ -137,6 +136,98 @@ public class UserDatabaseRW {
             stmt.setString(1, hash);
             stmt.setString(2, username);
             return stmt.executeUpdate() > 0;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Initialize UserTable and create default accounts
+     * Called during database setup
+     */
+    public static void initializeUserTable() throws SQLException {
+        lock.lock();
+
+        String createTableSQL = "CREATE TABLE UserTable(" +
+                "userId INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+                "username VARCHAR(50) UNIQUE NOT NULL," +
+                "passwordHash VARCHAR(255) NOT NULL," +
+                "email VARCHAR(100)," +
+                "fullName VARCHAR(100)," +
+                "role VARCHAR(20) NOT NULL," +
+                "isActive BOOLEAN DEFAULT true," +
+                "createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                "lastLogin TIMESTAMP" +
+                ")";
+
+        try (Connection conn = DriverManager.getConnection(dbURL)) {
+            conn.setAutoCommit(false);
+
+            try (Statement stmt = conn.createStatement()) {
+                // Create table
+                stmt.executeUpdate(createTableSQL);
+                System.out.println("  ✓ UserTable created");
+
+                // Prepare insert statement
+                String insertSQL = "INSERT INTO UserTable (username, passwordHash, email, fullName, role, isActive) " +
+                        "VALUES (?, ?, ?, ?, ?, true)";
+
+                try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+                    // 1. Create default admin account
+                    pstmt.setString(1, "admin");
+                    pstmt.setString(2, PasswordHasher.hashPassword("admin123"));
+                    pstmt.setString(3, "admin@happyshop.com");
+                    pstmt.setString(4, "System Administrator");
+                    pstmt.setString(5, "ADMIN");
+                    pstmt.executeUpdate();
+                    System.out.println("  ✓ Admin account created (username: admin, password: admin123)");
+
+                    // 2. Create warehouse staff account
+                    pstmt.setString(1, "staff");
+                    pstmt.setString(2, PasswordHasher.hashPassword("staff123"));
+                    pstmt.setString(3, "staff@happyshop.com");
+                    pstmt.setString(4, "Warehouse Staff");
+                    pstmt.setString(5, "STAFF");
+                    pstmt.executeUpdate();
+                    System.out.println("  ✓ Staff account created (username: staff, password: staff123)");
+
+                    // 3. Create another warehouse staff account
+                    pstmt.setString(1, "warehouse1");
+                    pstmt.setString(2, PasswordHasher.hashPassword("warehouse123"));
+                    pstmt.setString(3, "warehouse1@happyshop.com");
+                    pstmt.setString(4, "John Warehouse");
+                    pstmt.setString(5, "STAFF");
+                    pstmt.executeUpdate();
+                    System.out.println("  ✓ Warehouse staff account created (username: warehouse1, password: warehouse123)");
+
+                    // 4. Create picker account
+                    pstmt.setString(1, "picker");
+                    pstmt.setString(2, PasswordHasher.hashPassword("picker123"));
+                    pstmt.setString(3, "picker@happyshop.com");
+                    pstmt.setString(4, "Order Picker");
+                    pstmt.setString(5, "PICKER");
+                    pstmt.executeUpdate();
+                    System.out.println("  ✓ Picker account created (username: picker, password: picker123)");
+
+                    // 5. Create customer account for testing
+                    pstmt.setString(1, "customer");
+                    pstmt.setString(2, PasswordHasher.hashPassword("customer123"));
+                    pstmt.setString(3, "customer@example.com");
+                    pstmt.setString(4, "Test Customer");
+                    pstmt.setString(5, "CUSTOMER");
+                    pstmt.executeUpdate();
+                    System.out.println("  ✓ Customer account created (username: customer, password: customer123)");
+                }
+
+                conn.commit();
+                System.out.println("  ✓ All default accounts created successfully");
+
+            } catch (SQLException e) {
+                conn.rollback();
+                System.err.println("  ✗ Failed to create default accounts - rolled back");
+                throw e;
+            }
+
         } finally {
             lock.unlock();
         }

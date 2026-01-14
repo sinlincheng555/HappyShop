@@ -12,18 +12,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Main Application Entry Point - Authentication First Priority
+ * Main Application Entry Point - Dual Login Display
  *
- * SECURITY FLOW:
+ * DUAL LOGIN FLOW:
  * 1. Initialize OrderHub (backend system)
- * 2.  Show LOGIN SCREEN ONLY
- * 3.  NO customer interface loads
- * 4.  NO warehouse interface loads
- * 5.  NO order tracker loads
- * 6.  NO picker interface loads
- * 7.  NO emergency exit loads
- *
- * After successful login, LoginView launches the appropriate client based on user role.
+ * 2. Show TWO login screens simultaneously:
+ *    - Customer Login (left side)
+ *    - Warehouse/Staff Login (right side)
+ * 3. After successful login, appropriate client launches
  *
  * @author HappyShop Development Team
  * @version 2.0
@@ -37,8 +33,8 @@ public class Main extends Application {
         System.out.println("   🛍️ HappyShop System Starting...");
         System.out.println("========================================");
         System.out.println();
-        System.out.println("🔐 Authentication Required");
-        System.out.println("   All features locked until login");
+        System.out.println("🔐 Dual Login Display");
+        System.out.println("   Customer & Warehouse Logins");
         System.out.println();
         launch(args);
     }
@@ -48,25 +44,28 @@ public class Main extends Application {
         try {
             System.out.println("⚙️  Initializing system...");
 
-            // Initialize ONLY the backend OrderHub system (no UI)
+            // Initialize backend OrderHub system
             initializeOrderHub();
             System.out.println("✅ Backend initialized");
 
             System.out.println();
-            System.out.println("🔒 Starting authentication system...");
-            System.out.println("   No clients will load until login");
+            System.out.println("🔒 Starting dual login screens...");
             System.out.println();
 
-            // Start ONLY the login screen
-            startLoginScreen(primaryStage);
+            // Start TWO login screens
+            startCustomerLoginScreen();
+            startWarehouseLoginScreen();
 
-            System.out.println("✅ Login screen ready");
+            System.out.println("✅ Both login screens ready");
             System.out.println();
-            System.out.println("📌 Default Admin Credentials:");
-            System.out.println("   Username: admin");
-            System.out.println("   Password: admin123");
+            System.out.println("📌 Default Accounts:");
+            System.out.println("   Customer: customer / customer123");
+            System.out.println("   Admin: admin / admin123");
+            System.out.println("   Staff: staff / staff123");
+            System.out.println("   Warehouse: warehouse1 / warehouse123");
+            System.out.println("   Picker: picker / picker123");
             System.out.println();
-            System.out.println("⚠️  IMPORTANT: Change admin password after first login!");
+            System.out.println("⚠️  IMPORTANT: Change default passwords after first login!");
             System.out.println("========================================");
 
         } catch (Exception e) {
@@ -79,7 +78,6 @@ public class Main extends Application {
 
     /**
      * Initialize OrderHub backend system
-     * This runs in the background and doesn't show any UI
      */
     private void initializeOrderHub() {
         try {
@@ -93,41 +91,69 @@ public class Main extends Application {
     }
 
     /**
-     * Start the login screen ONLY
-     * No other windows or clients are loaded at this point
+     * Start Customer Login Screen (LEFT SIDE)
      */
-    private void startLoginScreen(Stage primaryStage) {
+    private void startCustomerLoginScreen() {
         try {
-            // Create login MVC components
+            Stage customerStage = new Stage();
+            customerStage.setTitle("HappyShop - Customer Login");
+
+            // Create MVC components
             LoginModel loginModel = new LoginModel();
             LoginView loginView = new LoginView();
             LoginController loginController = new LoginController();
 
-            // Link MVC components
+            // Link components
             loginView.loginController = loginController;
             loginController.loginModel = loginModel;
             loginModel.loginView = loginView;
 
-            // Start login screen
-            loginView.start(primaryStage);
+            // Start customer login
+            loginView.start(customerStage);
 
-            System.out.println("   ✓ Login screen launched");
+            // Position on left side
+            customerStage.setX(100);
+            customerStage.setY(100);
+
+            System.out.println("   ✓ Customer login screen launched (LEFT)");
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Failed to start login screen", e);
-            throw new RuntimeException("Cannot start without authentication system", e);
+            LOGGER.log(Level.SEVERE, "Failed to start customer login", e);
+            throw new RuntimeException("Cannot start customer login", e);
         }
     }
 
     /**
-     * Note: The following methods are NO LONGER called on startup:
-     * - startCustomerClient() - Launched by LoginView after customer login
-     * - startWarehouseClient() - Launched by LoginView after warehouse login
-     * - startPickerClient() - Can be launched manually if needed
-     * - startOrderTracker() - Can be launched manually if needed
-     * - startEmergencyExit() - Only launched for admin users by LoginView
-     *
-     * All client launching is now handled by LoginView.launchClientForUser()
-     * after successful authentication.
+     * Start Warehouse/Staff Login Screen (RIGHT SIDE)
      */
+    private void startWarehouseLoginScreen() {
+        try {
+            Stage warehouseStage = new Stage();
+            warehouseStage.setTitle("HappyShop - Warehouse/Staff Login");
+
+            // Create MVC components
+            LoginModel loginModel = new LoginModel();
+            LoginView loginView = new LoginView();
+            LoginController loginController = new LoginController();
+
+            // Link components
+            loginView.loginController = loginController;
+            loginController.loginModel = loginModel;
+            loginModel.loginView = loginView;
+
+            // Start warehouse login
+            loginView.start(warehouseStage);
+            loginView.showWarehouseLoginScreen();
+
+            // Position on right side
+            warehouseStage.setX(650);
+            warehouseStage.setY(100);
+
+            System.out.println("   ✓ Warehouse login screen launched (RIGHT)");
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to start warehouse login", e);
+            throw new RuntimeException("Cannot start warehouse login", e);
+        }
+    }
 }

@@ -65,7 +65,7 @@ public class WarehouseLoginView {
         container.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
 
         // Back button
-        Button btnBack = new Button("← Back");
+        Button btnBack = new Button("â† Back");
         btnBack.setStyle("-fx-background-color: transparent; -fx-text-fill: " + PRIMARY_COLOR + "; -fx-font-size: 14px; -fx-cursor: hand;");
         btnBack.setOnAction(e -> {
             if (loginView != null) {
@@ -142,7 +142,7 @@ public class WarehouseLoginView {
 
         // Staff card
         VBox staffCard = createRoleCard(
-                "🧑‍💼 Staff",
+                "ðŸ§‘â€ðŸ’¼ Staff",
                 "Manage inventory\nand stock levels",
                 UserRole.STAFF,
                 "#3B82F6"
@@ -150,7 +150,7 @@ public class WarehouseLoginView {
 
         // Admin card
         VBox adminCard = createRoleCard(
-                "👑 Admin",
+                "ðŸ‘‘ Admin",
                 "Full system access\nand controls",
                 UserRole.ADMIN,
                 "#EF4444"
@@ -259,13 +259,13 @@ public class WarehouseLoginView {
         );
         box.setMaxWidth(350);
 
-        Label titleLabel = new Label("ℹ️ Default Admin Credentials");
+        Label titleLabel = new Label("â„¹ï¸ Default Admin Credentials");
         titleLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #856404;");
 
         Label infoLabel = new Label(
                 "Username: admin\n" +
                         "Password: admin123\n\n" +
-                        "⚠️ Please change after first login"
+                        "âš ï¸ Please change after first login"
         );
         infoLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #856404; -fx-text-alignment: center;");
         infoLabel.setWrapText(true);
@@ -298,7 +298,7 @@ public class WarehouseLoginView {
         // Perform login in background
         new Thread(() -> {
             try {
-                loginController.doLogin(username, password);
+                loginController.login(username, password);
 
                 // Validate role after successful login
                 Platform.runLater(() -> {

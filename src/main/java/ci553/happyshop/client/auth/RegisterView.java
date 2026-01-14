@@ -25,13 +25,17 @@ public class RegisterView {
     private Button btnRegister;
 
     private final int WIDTH = 500;
-    private final int HEIGHT = 750;
+    private final int HEIGHT = 850;  // Increased from 750 to show all elements
 
     public void start(Stage primaryStage) {
         this.stage = primaryStage;
 
         VBox root = createRegistrationView();
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
+        ScrollPane scrollPane = new ScrollPane(root);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background: #F8F9FA; -fx-background-color: #F8F9FA;");
+
+        Scene scene = new Scene(scrollPane, WIDTH, HEIGHT);
         stage.setScene(scene);
         stage.show();
     }
@@ -42,7 +46,7 @@ public class RegisterView {
         container.setPadding(new Insets(40));
         container.setStyle("-fx-background-color: #F8F9FA;");
 
-        Button btnBack = new Button("← Back to Login");
+        Button btnBack = new Button("â† Back to Login");
         btnBack.setStyle("-fx-background-color: transparent; -fx-text-fill: #4A90E2; -fx-font-size: 14px; -fx-cursor: hand;");
         btnBack.setOnAction(e -> goBackToLogin());
         HBox backContainer = new HBox(btnBack);
@@ -68,6 +72,11 @@ public class RegisterView {
         tfUsername = (TextField) usernameBox.getChildren().get(1);
         tfUsername.setPromptText("At least 3 characters");
 
+        // Add character counter hint
+        Label usernameHint = new Label("Choose a unique username (3+ characters)");
+        usernameHint.setStyle("-fx-text-fill: #999; -fx-font-size: 11px;");
+        usernameBox.getChildren().add(usernameHint);
+
         VBox fullNameBox = createInputField("Full Name");
         tfFullName = (TextField) fullNameBox.getChildren().get(1);
         tfFullName.setPromptText("Your full name");
@@ -88,11 +97,26 @@ public class RegisterView {
         btnRegister.setStyle(
                 "-fx-background-color: #34C759; -fx-text-fill: white; " +
                         "-fx-font-size: 16px; -fx-font-weight: bold; " +
-                        "-fx-padding: 15px 30px; -fx-background-radius: 10px; -fx-cursor: hand;"
+                        "-fx-padding: 15px 30px; -fx-background-radius: 10px; -fx-cursor: hand; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(52, 199, 89, 0.3), 10, 0, 0, 3);"
         );
         btnRegister.setPrefWidth(350);
         btnRegister.setPrefHeight(50);
         btnRegister.setOnAction(e -> handleRegistration());
+
+        // Add hover effects
+        btnRegister.setOnMouseEntered(e -> btnRegister.setStyle(
+                "-fx-background-color: #2EA64A; -fx-text-fill: white; " +
+                        "-fx-font-size: 16px; -fx-font-weight: bold; " +
+                        "-fx-padding: 15px 30px; -fx-background-radius: 10px; -fx-cursor: hand; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(52, 199, 89, 0.5), 15, 0, 0, 5);"
+        ));
+        btnRegister.setOnMouseExited(e -> btnRegister.setStyle(
+                "-fx-background-color: #34C759; -fx-text-fill: white; " +
+                        "-fx-font-size: 16px; -fx-font-weight: bold; " +
+                        "-fx-padding: 15px 30px; -fx-background-radius: 10px; -fx-cursor: hand; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(52, 199, 89, 0.3), 10, 0, 0, 3);"
+        ));
 
         HBox loginBox = new HBox(5);
         loginBox.setAlignment(Pos.CENTER);
@@ -164,7 +188,7 @@ public class RegisterView {
                 btnRegister.setText("Create Account");
 
                 if (result.isSuccess()) {
-                    showMessage("✅ " + result.getMessage(), false);
+                    showMessage("âœ… " + result.getMessage(), false);
 
                     new Thread(() -> {
                         try {
@@ -175,7 +199,7 @@ public class RegisterView {
                         }
                     }).start();
                 } else {
-                    showMessage("❌ " + result.getMessage(), true);
+                    showMessage("âŒ " + result.getMessage(), true);
                 }
             });
         }).start();
