@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+    //the customermodel is the business logic layer in the MVC pattern for the customer shoppign system
+
 public class CustomerModel {
     public CustomerView cusView;
     public DatabaseRW databaseRW;
@@ -92,7 +94,7 @@ public class CustomerModel {
         updateView();
     }
 
-    // ==================== ENHANCED addToTrolley() METHOD ====================
+    // ==================== addToTrolley() METHOD ====================
     void addToTrolley() {
         if(theProduct != null) {
             // Check if product already exists in trolley
@@ -175,7 +177,7 @@ public class CustomerModel {
         trolley.sort((p1, p2) -> p1.getProductId().compareTo(p2.getProductId()));
     }
 
-    // ==================== ENHANCED changeProductQuantity() METHOD ====================
+    // ==================== changeProductQuantity() METHOD ====================
     void changeProductQuantity(Product product, int change) throws SQLException {
         for(int i = 0; i < trolley.size(); i++) {
             Product p = trolley.get(i);
@@ -211,7 +213,7 @@ public class CustomerModel {
         updateView();
     }
 
-    // ==================== ENHANCED checkOut() METHOD ====================
+    // ==================== checkOut() METHOD ====================
     void checkOut() throws IOException, SQLException {
         if(!trolley.isEmpty()){
             // Group products by ID first
@@ -359,50 +361,5 @@ public class CustomerModel {
     // ==================== GETTERS ====================
     public ArrayList<Product> getTrolley() {
         return new ArrayList<>(trolley); // Return copy to prevent external modification
-    }
-
-    public int getTrolleyItemCount() {
-        return trolley.size();
-    }
-
-    public double getTrolleyTotal() {
-        double total = 0.0;
-        for (Product product : trolley) {
-            total += product.getUnitPrice() * product.getOrderedQuantity();
-        }
-        return total;
-    }
-
-    public Product getCurrentProduct() {
-        return theProduct;
-    }
-
-    // ==================== VALIDATION METHODS ====================
-    public boolean hasProductInTrolley(String productId) {
-        return trolley.stream().anyMatch(p -> p.getProductId().equals(productId));
-    }
-
-    public int getProductQuantityInTrolley(String productId) {
-        return trolley.stream()
-                .filter(p -> p.getProductId().equals(productId))
-                .map(Product::getOrderedQuantity)
-                .findFirst()
-                .orElse(0);
-    }
-
-    // ==================== RESET METHODS ====================
-    public void resetSearch() {
-        theProduct = null;
-        displayLaSearchResult = "👋 Welcome to HappyShop!\n\nSearch for products using the form above to see detailed information, pricing, and availability.";
-        updateView();
-    }
-
-    public void clearAll() {
-        trolley.clear();
-        theProduct = null;
-        displayLaSearchResult = "👋 Welcome to HappyShop!\n\nSearch for products using the form above to see detailed information, pricing, and availability.";
-        displayTaReceipt = "";
-        isCheckoutSuccess = false;
-        updateView();
     }
 }

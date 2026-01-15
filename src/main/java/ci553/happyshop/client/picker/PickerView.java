@@ -1,4 +1,3 @@
-// ci553/happyshop/client/picker/PickerView.java
 package ci553.happyshop.client.picker;
 
 import ci553.happyshop.utility.WinPosManager;
@@ -13,8 +12,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * Modern Order Picker Window - Redesigned with contemporary UI
- *
  * The Order Picker window is for staff to prepare customer orders.
  * It contains two root views:
  * 1. vbOrderMapRoot - the default view, displaying available orders awaiting assignment.

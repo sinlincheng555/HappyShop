@@ -1,21 +1,10 @@
-// ci553/happyshop/client/picker/PickerUIStyles.java
 package ci553.happyshop.client.picker;
-
-import javafx.geometry.Insets;
-import javafx.scene.paint.Color;
-
 /**
- * Modern order picker UI styling system
- * Follows Material Design principles with fulfillment/logistics focus
- *
  * Design Philosophy:
  * - Clear, action-oriented interface for order pickers
  * - High visibility for order status and details
  * - Distinct color scheme emphasizing fulfillment workflow
  * - Focus on efficiency and quick task completion
- *
- * Color Theme: Orange/Amber (representing action, fulfillment, energy)
- *
  */
 public class PickerUIStyles {
 

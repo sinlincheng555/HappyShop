@@ -2,7 +2,6 @@ package ci553.happyshop.client.auth;
 
 import ci553.happyshop.auth.User;
 import ci553.happyshop.auth.UserRole;
-import ci553.happyshop.client.Main;
 import ci553.happyshop.client.customer.CustomerClient;
 import ci553.happyshop.client.emergency.EmergencyExit;
 import ci553.happyshop.client.orderTracker.OrderTracker;
@@ -16,6 +15,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+    // the loginview is the user interface layer for authentication in this javafx applciation/ it haandles everthing the user sees and interact during login
 
 public class LoginView {
     public LoginController loginController;

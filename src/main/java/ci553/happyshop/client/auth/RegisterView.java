@@ -9,6 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+    //the registerview is thee user interface for customer registration in this javafx application. it handles the complete registration workflow
+
 public class RegisterView {
 
     public LoginView loginView;

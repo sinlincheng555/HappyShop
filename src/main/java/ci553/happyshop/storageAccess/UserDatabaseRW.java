@@ -131,28 +131,6 @@ public class UserDatabaseRW {
         }
     }
 
-    public boolean updatePassword(String username, String newPassword) throws SQLException {
-        String hash = PasswordHasher.hashPassword(newPassword);
-        String sql = "UPDATE UserTable SET passwordHash = ? WHERE username = ?";
-
-        lock.lock();
-        try (Connection conn = DriverManager.getConnection(dbURL)) {
-            conn.setAutoCommit(false);
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, hash);
-                stmt.setString(2, username);
-                int rows = stmt.executeUpdate();
-                conn.commit();
-                return rows > 0;
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
 
     public static void initializeUserTable() throws SQLException {
         lock.lock();

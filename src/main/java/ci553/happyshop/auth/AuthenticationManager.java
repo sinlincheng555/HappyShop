@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 /**
  * AuthenticationManager - Central authentication system
- * Singleton pattern for managing user authentication
+ * Single pattern for managing user authentication
  *
  * @author HappyShop Development Team
  * @version 2.0
@@ -27,9 +27,9 @@ public class AuthenticationManager {
         return instance;
     }
 
-    /**
-     * Authenticate a user with username and password
-     */
+
+      //a user with username and password
+
     public User login(String username, String password) {
         try {
             User user = userDatabase.authenticateUser(username, password);
@@ -71,9 +71,9 @@ public class AuthenticationManager {
         }
     }
 
-    /**
-     * Register a new customer
-     */
+
+     //Register a new customer or creating new customer account
+
     public RegistrationResult registerCustomer(String username, String password, String email, String fullName) {
         try {
             // Validate input
@@ -111,9 +111,8 @@ public class AuthenticationManager {
         }
     }
 
-    /**
-     * Get currently logged in user
-     */
+    //Get currently logged in user
+
     public User getCurrentUser() {
         return currentUser;
     }
@@ -133,38 +132,6 @@ public class AuthenticationManager {
      */
     public boolean isLoggedIn() {
         return currentUser != null;
-    }
-
-    /**
-     * Change password for current user
-     */
-    public boolean changePassword(String oldPassword, String newPassword) {
-        if (currentUser == null) {
-            return false;
-        }
-
-        try {
-            // Verify old password
-            if (!PasswordHasher.verifyPassword(oldPassword, currentUser.getPasswordHash())) {
-                System.out.println("Old password incorrect");
-                return false;
-            }
-
-            // Update password
-            boolean success = userDatabase.updatePassword(currentUser.getUsername(), newPassword);
-
-            if (success) {
-                // Update current user's password hash
-                currentUser.setPasswordHash(PasswordHasher.hashPassword(newPassword));
-                System.out.println("Password changed successfully");
-            }
-
-            return success;
-
-        } catch (SQLException e) {
-            System.err.println("Password change error: " + e.getMessage());
-            return false;
-        }
     }
 
     /**

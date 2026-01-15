@@ -14,7 +14,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
- * FIXED WarehouseModel - All issues resolved
+ * the bysiness logic layer for warehouse management in the MVC patter
+ * this model handles alll product catalog oeprations, stock management, validation
+ * and coordination betweeen the databse and teh warehosue view
  */
 public class WarehouseModel {
     public WarehouseView view;

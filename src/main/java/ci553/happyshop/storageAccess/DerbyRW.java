@@ -7,21 +7,9 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * FIXED: ProductTable column order matches INSERT statement
- *
- * ProductTable definition:
- * CREATE TABLE ProductTable(
- *     productID CHAR(4) PRIMARY KEY,
- *     description VARCHAR(100),
- *     unitPrice DOUBLE,
- *     image VARCHAR(100),
- *     inStock INT,
- *     CHECK (inStock >= 0)
- * )
- *
- * INSERT order: productID, description, unitPrice, image, inStock
- */
+    //the DerbyRW class is the database aacceesss layer that implements the DatabaseRW interface
+    //it handle all databsse operations for teh HHappyshop system using AApache Derby databasse
+
 public class DerbyRW implements DatabaseRW {
     private static String dbURL = DatabaseRWFactory.dbURL;
     private Lock lock = new ReentrantLock();
@@ -286,20 +274,6 @@ public class DerbyRW implements DatabaseRW {
         }
     }
 
-    /**
-     * FIX #6: Warehouse adds a new product to database
-     *
-     * CRITICAL FIX: Column order must match table definition:
-     * 1. productID
-     * 2. description
-     * 3. unitPrice
-     * 4. image
-     * 5. inStock
-     *
-     * Previous error: "number of values assigned is not the same as number of specified or implied columns"
-     * Cause: INSERT values were in wrong order (id, des, price, image, stock)
-     *        but should match CREATE TABLE order
-     */
     public void insertNewProduct(String id, String des, double price, String image, int stock) throws SQLException {
         lock.lock();
 

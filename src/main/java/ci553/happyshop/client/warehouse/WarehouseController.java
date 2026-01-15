@@ -7,10 +7,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * WarehouseController with Role-Based Access Control (RBAC)
- *
- * Routes user actions and enforces permissions based on user role:
- *
  * STAFF Permissions:
  * - ✅ Search products
  * - ✅ View stock dashboard
@@ -174,68 +170,5 @@ public class WarehouseController {
         } else {
             System.err.println("⛔ Access Denied: " + message);
         }
-    }
-
-    /**
-     * Handle errors gracefully
-     */
-    public void handleError(String action, Exception e) {
-        System.err.println("Error processing action '" + action + "': " + e.getMessage());
-        e.printStackTrace();
-
-        if (model != null && model.alertSimulator != null) {
-            model.alertSimulator.showErrorMsg("Error: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Validate that model is properly initialized
-     */
-    public boolean isModelReady() {
-        if (model == null) {
-            System.err.println("ERROR: WarehouseModel not initialized in controller!");
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Check if current user can modify prices
-     */
-    public boolean canModifyPrices() {
-        User user = AuthenticationManager.getInstance().getCurrentUser();
-        return user != null && user.canModifyPrices();
-    }
-
-    /**
-     * Check if current user can delete products
-     */
-    public boolean canDeleteProducts() {
-        User user = AuthenticationManager.getInstance().getCurrentUser();
-        return user != null && user.canDeleteProducts();
-    }
-
-    /**
-     * Check if current user can add products
-     */
-    public boolean canAddProducts() {
-        User user = AuthenticationManager.getInstance().getCurrentUser();
-        return user != null && user.canAddProducts();
-    }
-
-    /**
-     * ⭐ ADDED: Check if current user can update stock
-     */
-    public boolean canUpdateStock() {
-        User user = AuthenticationManager.getInstance().getCurrentUser();
-        return user != null && user.canUpdateStock();
-    }
-
-    /**
-     * Get current user role display name
-     */
-    public String getCurrentUserRole() {
-        User user = AuthenticationManager.getInstance().getCurrentUser();
-        return user != null ? user.getRole().getDisplayName() : "Unknown";
     }
 }

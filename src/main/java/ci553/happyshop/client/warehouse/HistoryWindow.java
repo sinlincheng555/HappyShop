@@ -1,7 +1,6 @@
 package ci553.happyshop.client.warehouse;
 
 import ci553.happyshop.utility.WinPosManager;
-import ci553.happyshop.utility.WindowBounds;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -14,9 +13,9 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-/**
- * HistoryWindow for displaying warehouse management history
- */
+
+ //HistoryWindow for displaying warehouse management history
+
 public class HistoryWindow {
     public WarehouseView warehouseView;
     private Stage historyWindow;
@@ -62,12 +61,4 @@ public class HistoryWindow {
         WinPosManager.registerWindow(historyWindow, 450, 400);
     }
 
-    /**
-     * Closes the history window
-     */
-    public void closeWindow() {
-        if (historyWindow != null && historyWindow.isShowing()) {
-            historyWindow.close();
-        }
-    }
 }

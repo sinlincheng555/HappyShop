@@ -2,7 +2,6 @@ package ci553.happyshop.client.warehouse;
 
 import ci553.happyshop.utility.WindowBounds;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 /**
@@ -47,13 +46,6 @@ public class AlertSimulator {
         alert.showAndWait();
     }
 
-    /**
-     * Sets the main window bounds for positioning alerts
-     */
-    public void setMainWindowBounds(WindowBounds bounds) {
-        // This can be used to position alerts relative to main window
-        // Currently using default positioning
-    }
 
     /**
      * Closes the alert simulator window if open

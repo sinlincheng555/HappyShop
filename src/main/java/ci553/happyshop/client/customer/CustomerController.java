@@ -27,7 +27,6 @@ public class CustomerController {
         }
     }
 
-    // ==================== ADD THIS METHOD ====================
     // This method name must match what CustomerView is calling
     public void changeQuantity(Product product, int delta) throws SQLException, IOException {
         if (cusModel != null) {

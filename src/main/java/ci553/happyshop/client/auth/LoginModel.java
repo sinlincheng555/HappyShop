@@ -3,6 +3,8 @@ package ci553.happyshop.client.auth;
 import ci553.happyshop.auth.AuthenticationManager;
 import ci553.happyshop.auth.User;
 
+    //the loginModel serves as a wrapper aroound the AuthenticaationManager providing two key function
+
 public class LoginModel {
     public LoginView loginView;
     private AuthenticationManager authManager;
@@ -19,9 +21,4 @@ public class LoginModel {
         return authManager.registerCustomer(username, password, email, fullName);
     }
 
-    public void updateView(String message, boolean isError) {
-        if (loginView != null) {
-            loginView.showMessage(message, isError);
-        }
-    }
 }

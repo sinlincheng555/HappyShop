@@ -21,8 +21,6 @@ import java.util.logging.Logger;
  *    - Warehouse/Staff Login (right side)
  * 3. After successful login, appropriate client launches
  *
- * @author HappyShop Development Team
- * @version 2.0
  */
 public class Main extends Application {
 

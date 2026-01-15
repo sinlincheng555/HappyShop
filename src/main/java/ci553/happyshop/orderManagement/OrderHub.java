@@ -25,15 +25,12 @@ import java.util.stream.Stream;
 
 /**
  * Enhanced OrderHub with stock reservation tracking.
- *
  * Key Features:
  * - Reserves stock when order is created
  * - Releases reserved stock when order is collected
  * - Tracks reserved quantities per product
  * - Prevents overselling
  *
- * @author University of Brighton Student
- * @version 2.0
  */
 public class OrderHub {
     private static OrderHub orderHub;
@@ -154,19 +151,15 @@ public class OrderHub {
         }
     }
 
-    /**
-     * Gets reserved quantity for a specific product.
-     *
-     * @param productId Product ID
-     * @return Quantity reserved across all active orders
-     */
+    //Gets reserved quantity for a specific product.
+
     public int getReservedStock(String productId) {
         return reservedStockMap.getOrDefault(productId, 0);
     }
 
-    /**
-     * Prints current reserved stock status (for debugging).
-     */
+
+     //Prints current reserved stock status (for debugging).
+
     private void printReservedStockStatus() {
         if (reservedStockMap.isEmpty()) {
             System.out.println("📦 No stock currently reserved");
@@ -222,7 +215,7 @@ public class OrderHub {
         }
     }
 
-    // ========== EXISTING METHODS (UNCHANGED) ==========
+    // ========== EXISTING METHODS ==========
 
     public void registerOrderTracker(OrderTracker orderTracker) {
         orderTrackerList.add(orderTracker);

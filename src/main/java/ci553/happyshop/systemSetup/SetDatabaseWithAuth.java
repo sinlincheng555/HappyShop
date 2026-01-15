@@ -2,13 +2,11 @@ package ci553.happyshop.systemSetup;
 
 import ci553.happyshop.storageAccess.DatabaseRWFactory;
 import ci553.happyshop.storageAccess.UserDatabaseRW;
-import ci553.happyshop.utility.StorageLocation;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.*;
+
+    // the setdatabasewiithauth is a database initialisation utility that sets up the happyshop database from scratch
 
 public class SetDatabaseWithAuth {
 

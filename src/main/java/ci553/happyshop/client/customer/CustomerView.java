@@ -22,9 +22,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- * Modern e-commerce Customer View using CustomerUIStyles
- */
+
+  //Modern HappyShop Customer View using CustomerUIStyles
+
 public class CustomerView {
     public CustomerController cusController;
 
@@ -583,7 +583,7 @@ public class CustomerView {
         return container;
     }
 
-    // ==================== EXISTING METHODS (keep these) ====================
+    // ==================== METHODS ====================
 
     private void buttonClicked(ActionEvent event) {
         try {
@@ -711,144 +711,18 @@ public class CustomerView {
         );
     }
 
-    // ==================== ADDED GETTER METHODS FOR CustomerModel ====================
-
-    /**
-     * Get the search product ID from the text field
-     */
+    // ==================== GETTER METHODS FOR CustomerModel ====================
+     //Get the search prduct ID from the text field
     public String getSearchProductId() {
         return tfId != null ? tfId.getText().trim() : "";
     }
 
-    /**
-     * Get the search product name from the text field
-     */
-    public String getSearchProductName() {
-        return tfName != null ? tfName.getText().trim() : "";
-    }
+     //Set the product ID field text
 
-    /**
-     * Clear both search fields
-     */
-    public void clearSearchFields() {
-        if (tfId != null) tfId.clear();
-        if (tfName != null) tfName.clear();
-    }
-
-    /**
-     * Set focus to the product ID search field
-     */
-    public void focusOnSearchField() {
-        if (tfId != null) {
-            tfId.requestFocus();
-        }
-    }
-
-    /**
-     * Set the product ID field text
-     */
     public void setProductId(String productId) {
         if (tfId != null) {
             tfId.setText(productId);
         }
     }
 
-    /**
-     * Set the product name field text
-     */
-    public void setProductName(String productName) {
-        if (tfName != null) {
-            tfName.setText(productName);
-        }
-    }
-
-    /**
-     * Get the current product image view
-     */
-    public ImageView getProductImageView() {
-        return ivProduct;
-    }
-
-    /**
-     * Get the product info label
-     */
-    public Label getProductInfoLabel() {
-        return lbProductInfo;
-    }
-
-    /**
-     * Get the trolley ListView
-     */
-    public ListView<Product> getTrolleyListView() {
-        return lvTrolley;
-    }
-
-    /**
-     * Get the total price label
-     */
-    public Label getTotalPriceLabel() {
-        return laTotalPrice;
-    }
-
-    /**
-     * Get the item count label
-     */
-    public Label getItemCountLabel() {
-        return laItemCount;
-    }
-
-    /**
-     * Get the receipt text area
-     */
-    public TextArea getReceiptTextArea() {
-        return taReceipt;
-    }
-
-    /**
-     * Update the trolley display with a new list
-     */
-    public void setTrolleyItems(List<Product> products) {
-        if (lvTrolley != null) {
-            lvTrolley.getItems().setAll(products);
-            lvTrolley.refresh();
-            updateTotalPrice();
-            updateItemCount();
-        }
-    }
-
-    /**
-     * Show the trolley page
-     */
-    public void showTrolleyPage() {
-        showTrolleyOrReceiptPage(vbTrolleyPage);
-    }
-
-    /**
-     * Show the receipt page
-     */
-    public void showReceiptPage() {
-        showTrolleyOrReceiptPage(vbReceiptPage);
-    }
-
-    /**
-     * Check if trolley page is currently shown
-     */
-    public boolean isTrolleyPageShowing() {
-        if (hbRoot.getChildren().size() > 2) {
-            Node lastNode = hbRoot.getChildren().get(hbRoot.getChildren().size() - 1);
-            return lastNode == vbTrolleyPage;
-        }
-        return false;
-    }
-
-    /**
-     * Check if receipt page is currently shown
-     */
-    public boolean isReceiptPageShowing() {
-        if (hbRoot.getChildren().size() > 2) {
-            Node lastNode = hbRoot.getChildren().get(hbRoot.getChildren().size() - 1);
-            return lastNode == vbReceiptPage;
-        }
-        return false;
-    }
 }

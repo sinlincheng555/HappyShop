@@ -16,19 +16,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Modern OrderTracker - Real-time order monitoring dashboard
- *
- * Displays all active orders and their current states in a clean, modern interface.
- * The order data is received from the OrderHub and updated in real-time.
- *
  * Design Features:
  * - Card-based layout matching PickerView style
  * - Color-coded status badges for visual clarity
  * - Real-time updates from OrderHub
  * - Professional dashboard appearance
- *
- * @author HappyShop Development Team
- * @version 2.0 (Modernized)
  */
 public class OrderTracker {
     private final int WIDTH = 500;
@@ -50,9 +42,8 @@ public class OrderTracker {
     private static final String TEXT_SECONDARY = "#6B7280";
     private static final String FONT_PRIMARY = "'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif";
 
-    /**
-     * Constructor initializes the modern UI with header, order list, and status indicators
-     */
+     //Constructor initializes the modern UI with header, order list, and status indicators
+
     public OrderTracker() {
         // Main container
         VBox mainContainer = new VBox();
@@ -82,9 +73,9 @@ public class OrderTracker {
         window.show();
     }
 
-    /**
-     * Creates the modern header section
-     */
+
+     //Creates the modern header section
+
     private VBox createHeader() {
         VBox header = new VBox(8);
         header.setAlignment(Pos.CENTER);
@@ -126,9 +117,8 @@ public class OrderTracker {
         return header;
     }
 
-    /**
-     * Creates a status legend showing what each color means
-     */
+     //Creates a status legend showing what each color means
+
     private HBox createStatusLegend() {
         HBox legend = new HBox(15);
         legend.setAlignment(Pos.CENTER);
@@ -143,9 +133,8 @@ public class OrderTracker {
         return legend;
     }
 
-    /**
-     * Creates a single legend item
-     */
+     //Creates a single legend item
+
     private HBox createLegendItem(String label, String color) {
         HBox item = new HBox(5);
         item.setAlignment(Pos.CENTER);
@@ -170,9 +159,8 @@ public class OrderTracker {
         return item;
     }
 
-    /**
-     * Creates the scrollable order list section
-     */
+     //Creates the scrollable order list section
+
     private ScrollPane createOrderListSection() {
         orderListContainer = new VBox(12);
         orderListContainer.setAlignment(Pos.TOP_CENTER);
@@ -190,9 +178,8 @@ public class OrderTracker {
         return scrollPane;
     }
 
-    /**
-     * Creates a modern order card
-     */
+     //Creates a modern order card
+
     private HBox createOrderCard(int orderId, OrderState state) {
         HBox card = new HBox(15);
         card.setAlignment(Pos.CENTER_LEFT);
@@ -235,9 +222,8 @@ public class OrderTracker {
         return card;
     }
 
-    /**
-     * Creates a color-coded status badge
-     */
+     //Creates a color-coded status badge
+
     private Label createStatusBadge(OrderState state) {
         String color = getColorForState(state);
         String icon = getIconForState(state);
@@ -258,9 +244,8 @@ public class OrderTracker {
         return badge;
     }
 
-    /**
-     * Gets the color for a specific order state
-     */
+     //Gets the color for a specific order state
+
     private String getColorForState(OrderState state) {
         switch (state) {
             case Ordered:
@@ -274,9 +259,9 @@ public class OrderTracker {
         }
     }
 
-    /**
-     * Gets the icon for a specific order state
-     */
+
+     //Gets the icon for a specific order state
+
     private String getIconForState(OrderState state) {
         switch (state) {
             case Ordered:
@@ -336,9 +321,8 @@ public class OrderTracker {
         }
     }
 
-    /**
-     * Creates an empty state view when no orders exist
-     */
+    //Creates an empty state view when no orders exist
+
     private VBox createEmptyState() {
         VBox emptyState = new VBox(10);
         emptyState.setAlignment(Pos.CENTER);

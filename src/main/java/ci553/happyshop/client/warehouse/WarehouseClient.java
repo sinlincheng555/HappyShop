@@ -6,13 +6,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * FIXED Warehouse Client - Standalone application
- *
- * This client can run independently without launching the full system.
- * It is fully functional on its own.
- *
- * CRITICAL FIX: Proper initialization order to prevent NullPointerException
- *
  * Initialization Order:
  * 1. Create all objects (View, Controller, Model, DatabaseRW)
  * 2. Link them together (BEFORE starting view)
@@ -118,10 +111,10 @@ public class WarehouseClient extends Application {
     /**
      * Verify all component links are properly established
      *
-     * @param view The warehouse view
-     * @param controller The warehouse controller
-     * @param model The warehouse model
-     * @return true if all links valid, false otherwise
+     *  view The warehouse view
+     *  controller The warehouse controller
+     *  model The warehouse model
+     *  true if all links valid, false otherwise
      */
     private boolean verifyLinks(WarehouseView view, WarehouseController controller, WarehouseModel model) {
         boolean valid = true;
@@ -153,12 +146,8 @@ public class WarehouseClient extends Application {
         return valid;
     }
 
-    /**
-     * Show error dialog to user
-     *
-     * @param title Dialog title
-     * @param message Error message
-     */
+     //Show error dialog to user
+
     private void showErrorDialog(String title, String message) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                 javafx.scene.control.Alert.AlertType.ERROR

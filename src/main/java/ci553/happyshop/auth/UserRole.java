@@ -1,8 +1,8 @@
 package ci553.happyshop.auth;
 
-/**
- * UserRole enum - Complete implementation with permissions
- */
+
+ //UserRole enum - Complete implementation with permissions
+
 public enum UserRole {
     CUSTOMER("Customer", 1),
     STAFF("Staff", 2),
@@ -18,10 +18,6 @@ public enum UserRole {
 
     public String getDisplayName() {
         return displayName;
-    }
-
-    public int getAccessLevel() {
-        return accessLevel;
     }
 
     public boolean canAccessWarehouse() {
@@ -46,13 +42,5 @@ public enum UserRole {
 
     public boolean canUpdateStock() {
         return this == STAFF || this == ADMIN;
-    }
-
-    public boolean canViewAllOrders() {
-        return this == STAFF || this == ADMIN;
-    }
-
-    public boolean canManageUsers() {
-        return this == ADMIN;
     }
 }

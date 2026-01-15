@@ -60,9 +60,9 @@ public class StockLevelIndicator {
      * - 10% < stock <= 30% = MEDIUM
      * - stock > 30% = HIGH
      *
-     * @param currentStock Current quantity in stock
-     * @param maxStock Maximum stock capacity (initial stock when product was added)
-     * @return StockLevel enum representing the current stock status
+     * currentStock Current quantity in stock
+     * maxStock Maximum stock capacity (initial stock when product was added)
+     * StockLevel enum representing the current stock status
      */
     public static StockLevel determineStockLevel(int currentStock, int maxStock) {
         if (currentStock <= 0) {
@@ -87,9 +87,9 @@ public class StockLevelIndicator {
     /**
      * Calculates the stock percentage.
      *
-     * @param currentStock Current quantity in stock
-     * @param maxStock Maximum stock capacity
-     * @return Stock percentage as a double (0.0 to 1.0)
+     * currentStock Current quantity in stock
+     * maxStock Maximum stock capacity
+     * Stock percentage as a double (0.0 to 1.0)
      */
     public static double calculateStockPercentage(int currentStock, int maxStock) {
         if (maxStock <= 0) {
@@ -99,26 +99,9 @@ public class StockLevelIndicator {
     }
 
     /**
-     * Generates a formatted stock status message for console output.
-     *
-     * @param productId Product ID
-     * @param currentStock Current stock quantity
-     * @param maxStock Maximum stock capacity
-     * @return Formatted status message
-     */
-    public static String getStockStatusMessage(String productId, int currentStock, int maxStock) {
-        StockLevel level = determineStockLevel(currentStock, maxStock);
-        double percentage = calculateStockPercentage(currentStock, maxStock) * 100;
-
-        return String.format("Product %s: %s (%.1f%% of capacity) - %d/%d units",
-                productId, level.getDisplayText(), percentage, currentStock, maxStock);
-    }
-
-    /**
      * Gets JavaFX CSS style string for the stock level indicator.
-     *
-     * @param stockLevel The stock level to get styles for
-     * @return CSS style string for JavaFX components
+     *  stockLevel The stock level to get styles for
+     *  CSS style string for JavaFX components
      */
     public static String getStyleForLevel(StockLevel stockLevel) {
         return String.format(
@@ -135,9 +118,8 @@ public class StockLevelIndicator {
 
     /**
      * Gets console color code for terminal output (ANSI colors).
-     *
-     * @param stockLevel The stock level
-     * @return ANSI color code string
+     * stockLevel The stock level
+     * ANSI color code string
      */
     public static String getConsoleColorCode(StockLevel stockLevel) {
         switch (stockLevel) {
@@ -154,11 +136,7 @@ public class StockLevelIndicator {
         }
     }
 
-    /**
-     * Resets console color.
-     *
-     * @return ANSI reset code
-     */
+     //Resets console color.
     public static String resetConsoleColor() {
         return "\u001B[0m";
     }

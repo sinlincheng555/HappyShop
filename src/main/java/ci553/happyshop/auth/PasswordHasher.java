@@ -9,8 +9,6 @@ import java.util.Base64;
  * PasswordHasher - Secure password hashing using SHA-256 with salt
  * (BCrypt alternative for environments without external libraries)
  *
- * @author HappyShop Development Team
- * @version 2.0
  */
 public class PasswordHasher {
 
@@ -72,9 +70,9 @@ public class PasswordHasher {
         }
     }
 
-    /**
-     * Hash a password with a given salt
-     */
+
+     //Hash a password with a given salt
+
     private static String hashWithSalt(String password, byte[] salt) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
 
@@ -88,9 +86,9 @@ public class PasswordHasher {
         return Base64.getEncoder().encodeToString(hashedBytes);
     }
 
-    /**
-     * Verify if a stored hash is in the correct format
-     */
+
+      //Verify if a stored hash is in the correct format
+
     public static boolean isValidHashFormat(String hash) {
         if (hash == null || hash.isEmpty()) {
             return false;

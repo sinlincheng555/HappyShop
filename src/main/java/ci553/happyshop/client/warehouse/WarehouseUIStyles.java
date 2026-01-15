@@ -5,17 +5,11 @@ import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 
 /**
- * Modern warehouse management UI styling system
- * Follows Material Design principles with admin/warehouse focus
- *
  * Design Philosophy:
  * - Professional, clean interface for warehouse staff
  * - Clear visual hierarchy for product management
  * - Distinct color scheme from customer interface
  * - Emphasizes functionality and efficiency
- *
- * @author HappyShop Development Team
- * @version 2.0
  */
 public class WarehouseUIStyles {
 
@@ -27,8 +21,6 @@ public class WarehouseUIStyles {
         public static final String PRIMARY_LIGHT = "#F5F3FF";  // Light purple background
 
         // Secondary colors
-        public static final String SECONDARY = "#059669";      // Green (Success operations)
-        public static final String ACCENT = "#F59E0B";         // Amber (Warnings)
         public static final String SUCCESS = "#10B981";        // Emerald (Confirmations)
         public static final String SUCCESS_DARK = "#059669";   // Darker green
         public static final String WARNING = "#F59E0B";        // Amber (Stock alerts)
@@ -47,7 +39,6 @@ public class WarehouseUIStyles {
         public static final String TEXT_PRIMARY = "#111827";   // Primary text
         public static final String TEXT_SECONDARY = "#6B7280"; // Secondary text
         public static final String TEXT_TERTIARY = "#9CA3AF";  // Tertiary text
-        public static final String TEXT_DISABLED = "#D1D5DB";  // Disabled text
 
         // Stock level colors (more vibrant for warehouse)
         public static final String STOCK_CRITICAL = "#DC2626";  // Critical stock red
@@ -60,31 +51,22 @@ public class WarehouseUIStyles {
         public static final String FORM_NEW = "#FEF3C7";       // Light yellow for new
         public static final String FORM_SEARCH = "#DBEAFE";    // Light blue for search
 
-        // Gradient backgrounds
-        public static final String GRADIENT_PRIMARY = "linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)";
-        public static final String GRADIENT_SUCCESS = "linear-gradient(135deg, #10B981 0%, #059669 100%)";
-        public static final String GRADIENT_HEADER = "linear-gradient(to right, #7C3AED, #EC4899)";
     }
 
     // ==================== TYPOGRAPHY SYSTEM ====================
     public static class Typography {
         // Font families
         public static final String FONT_PRIMARY = "'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif";
-        public static final String FONT_MONO = "'SF Mono', 'Monaco', 'Consolas', monospace";
 
         // Font sizes
         public static final double HEADLINE1 = 32.0;
         public static final double HEADLINE2 = 28.0;
         public static final double HEADLINE3 = 24.0;
         public static final double HEADLINE4 = 20.0;
-        public static final double BODY_LARGE = 16.0;
         public static final double BODY = 14.0;
         public static final double BODY_SMALL = 12.0;
-        public static final double CAPTION = 10.0;
 
         // Font weights
-        public static final String LIGHT = "300";
-        public static final String REGULAR = "400";
         public static final String MEDIUM = "500";
         public static final String SEMIBOLD = "600";
         public static final String BOLD = "700";
@@ -97,71 +79,25 @@ public class WarehouseUIStyles {
         public static final double MD = 16.0;
         public static final double LG = 24.0;
         public static final double XL = 32.0;
-        public static final double XXL = 48.0;
 
-        public static final Insets PADDING_XS = new Insets(XS);
-        public static final Insets PADDING_SM = new Insets(SM);
-        public static final Insets PADDING_MD = new Insets(MD);
-        public static final Insets PADDING_LG = new Insets(LG);
-        public static final Insets PADDING_XL = new Insets(XL);
     }
 
     // ==================== BORDER RADIUS ====================
     public static class Borders {
-        public static final double NONE = 0.0;
-        public static final double SM = 4.0;
         public static final double MD = 8.0;
         public static final double LG = 12.0;
-        public static final double XL = 16.0;
-        public static final double PILL = 24.0;
-        public static final double CIRCLE = 50.0;
     }
 
     // ==================== SHADOWS ====================
     public static class Shadows {
-        public static final String NONE = "none";
         public static final String SM = "dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2)";
         public static final String MD = "dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 4)";
-        public static final String LG = "dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 6)";
-        public static final String XL = "dropshadow(gaussian, rgba(0,0,0,0.18), 16, 0, 0, 8)";
-        public static final String FOCUS = "dropshadow(gaussian, rgba(124, 58, 237, 0.4), 8, 0, 0, 0)";
     }
 
     // ==================== COMPONENT STYLES ====================
     public static class Components {
 
-        // ===== PAGE BACKGROUNDS =====
-        public static String getPageBackground() {
-            return String.format("-fx-background-color: %s;", Colors.BACKGROUND);
-        }
-
-        public static String getSearchPageBackground() {
-            return String.format(
-                    "-fx-background-color: %s; " +
-                            "-fx-padding: %fpx;",
-                    Colors.FORM_SEARCH, Spacing.MD
-            );
-        }
-
-        public static String getProductFormBackground() {
-            return String.format(
-                    "-fx-background-color: %s; " +
-                            "-fx-padding: %fpx;",
-                    Colors.SURFACE, Spacing.MD
-            );
-        }
-
         // ===== HEADING STYLES =====
-        public static String getHeading1() {
-            return String.format(
-                    "-fx-font-family: %s; " +
-                            "-fx-font-size: %fpx; " +
-                            "-fx-font-weight: %s; " +
-                            "-fx-text-fill: %s;",
-                    Typography.FONT_PRIMARY, Typography.HEADLINE1,
-                    Typography.BOLD, Colors.TEXT_PRIMARY
-            );
-        }
 
         public static String getHeading2() {
             return String.format(
@@ -185,16 +121,6 @@ public class WarehouseUIStyles {
             );
         }
 
-        public static String getPageTitle() {
-            return String.format(
-                    "-fx-font-family: %s; " +
-                            "-fx-font-size: %fpx; " +
-                            "-fx-font-weight: %s; " +
-                            "-fx-text-fill: %s;",
-                    Typography.FONT_PRIMARY, Typography.HEADLINE4,
-                    Typography.BOLD, Colors.PRIMARY
-            );
-        }
 
         // ===== TEXT STYLES =====
         public static String getBodyText() {
@@ -470,27 +396,6 @@ public class WarehouseUIStyles {
     // ==================== HELPER METHODS ====================
 
     /**
-     * Gets hover style for buttons
-     */
-    public static String getButtonHoverStyle(String baseColor) {
-        String hoverColor;
-        switch (baseColor) {
-            case Colors.PRIMARY:
-                hoverColor = Colors.PRIMARY_DARK;
-                break;
-            case Colors.SUCCESS:
-                hoverColor = Colors.SUCCESS_DARK;
-                break;
-            case Colors.ERROR:
-                hoverColor = Colors.ERROR_DARK;
-                break;
-            default:
-                hoverColor = darkenColor(baseColor, 0.15);
-        }
-        return hoverColor;
-    }
-
-    /**
      * Darkens a hex color by percentage
      */
     public static String darkenColor(String hex, double percentage) {
@@ -507,33 +412,4 @@ public class WarehouseUIStyles {
         }
     }
 
-    /**
-     * Lightens a hex color by percentage
-     */
-    public static String lightenColor(String hex, double percentage) {
-        try {
-            Color color = Color.web(hex);
-            double factor = percentage;
-            return String.format("#%02X%02X%02X",
-                    (int)(color.getRed() * 255 + (255 - color.getRed() * 255) * factor),
-                    (int)(color.getGreen() * 255 + (255 - color.getGreen() * 255) * factor),
-                    (int)(color.getBlue() * 255 + (255 - color.getBlue() * 255) * factor)
-            );
-        } catch (Exception e) {
-            return hex;
-        }
-    }
-
-    /**
-     * Extract color from style string
-     */
-    public static String extractColorFromStyle(String style, String property) {
-        if (style.contains(property + ": ")) {
-            int start = style.indexOf(property + ": ") + property.length() + 2;
-            int end = style.indexOf(";", start);
-            if (end == -1) end = style.length();
-            return style.substring(start, end).trim();
-        }
-        return Colors.PRIMARY;
-    }
 }

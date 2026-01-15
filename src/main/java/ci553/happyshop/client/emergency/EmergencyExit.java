@@ -14,11 +14,6 @@ import javafx.stage.Stage;
 import java.util.Optional;
 
 /**
- * Modern Emergency Exit - Critical system shutdown control
- *
- * The EmergencyExit provides admins with an emergency shutdown button
- * to immediately terminate the entire application in critical situations.
- *
  * Design Features:
  * - Professsional warrning interface matching PickerView style
  * - Clear visual hierarchy with danger indicators
@@ -194,7 +189,6 @@ public class EmergencyExit {
         return card;
     }
 
-
      //Creates a single warning item.
 
     private HBox createWarningItem(String text) {
@@ -223,7 +217,6 @@ public class EmergencyExit {
         item.getChildren().addAll(bullet, textLabel);
         return item;
     }
-
 
      //Creates the emergency shutdown button
 
@@ -273,7 +266,6 @@ public class EmergencyExit {
         return btn;
     }
 
-
      //Creates the footer section
 
     private VBox createFooter() {
@@ -299,7 +291,6 @@ public class EmergencyExit {
         footer.getChildren().addAll(infoLabel, tipLabel);
         return footer;
     }
-
 
      //shows a confirmation dialog before shutting down
 
@@ -332,7 +323,6 @@ public class EmergencyExit {
             performShutdown();
         }
     }
-
 
      //Performs the actual system shutdown
 

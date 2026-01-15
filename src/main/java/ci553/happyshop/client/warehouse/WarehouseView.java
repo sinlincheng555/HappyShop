@@ -3,7 +3,6 @@ package ci553.happyshop.client.warehouse;
 import ci553.happyshop.catalogue.Product;
 import ci553.happyshop.utility.StorageLocation;
 import ci553.happyshop.utility.WinPosManager;
-import ci553.happyshop.utility.WindowBounds;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -25,13 +23,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
 /**
- * Modern Warehouse View using WarehouseUIStyles
  * - Clean, professional interface for warehouse management
  * - Consistent styling with modern design patterns
  * - All inline styles replaced with centralized style system
@@ -709,15 +705,6 @@ public class WarehouseView {
     }
 
     // ==================== UTILITY METHODS ====================
-    WindowBounds getWindowBounds() {
-        return new WindowBounds(
-                viewWindow.getX(),
-                viewWindow.getY(),
-                viewWindow.getWidth(),
-                viewWindow.getHeight()
-        );
-    }
-
     private void showStockDashboard() {
         if (stockDashboard != null) {
             stockDashboard.show();
