@@ -18,7 +18,13 @@ import java.util.ArrayList;
 /**
  * Stock Dashboard - Visual overview of inventory status
  * Shows all products with their stock levels and status indicators
+ * Key Features:
+ * - Real-time inventory statistics
+ * - Visual stock level indicators
+ * - Search and filter functionality
+ * - Responsive UI with product cards
  */
+
 public class StockDashboard {
     private Stage dashboardWindow;
     private WarehouseView warehouseView;

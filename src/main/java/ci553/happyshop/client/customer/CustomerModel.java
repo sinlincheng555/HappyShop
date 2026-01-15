@@ -221,23 +221,52 @@ public class CustomerModel {
     }
 
     // ==================== checkOut() METHOD ====================
+    /**
+     * PROCESSES THE CUSTOMER'S CHECKOUT REQUEST
+     *
+     * This is the core checkout method that:
+     * 1. Validates cart is not empty
+     * 2. Groups duplicate products by ID for proper stock management
+     * 3. Checks stock availability via database
+     * 4. Creates order if stock is sufficient
+     * 5. Generates receipt and clears cart
+     * 6. Handles insufficient stock scenarios
+     *
+     * Key Business Logic:
+     * - Uses purchaseStocks() for atomic stock verification
+     * - Creates order through OrderHub singleton
+     * - Generates formatted receipt for user confirmation
+     * - Clears cart only after successful stock verification
+     * - Provides detailed error messages for insufficient stock
+     *
+     * @throws IOException if file operations fail during order processing
+     * @throws SQLException if database operations fail
+     */
     void checkOut() throws IOException, SQLException {
+        // 1. VALIDATE CART HAS ITEMS
         if(!trolley.isEmpty()){
-            // Group products by ID first
+            // 2. GROUP PRODUCTS - Consolidate duplicate items by product ID
+            // This ensures quantities are summed correctly before stock check
             ArrayList<Product> groupedTrolley = groupProductsById(trolley);
 
-            // Check stock availability
+            // 3. CRITICAL: VERIFY STOCK AVAILABILITY
+            // purchaseStocks() checks AND reserves stock atomically
+            // Returns list of products with insufficient stock (empty list if all OK)
             ArrayList<Product> insufficientProducts = databaseRW.purchaseStocks(groupedTrolley);
 
+            // 4. PROCESS ORDER IF STOCK IS AVAILABLE
             if(insufficientProducts.isEmpty()){
-                // Create order
+                // 4a. CREATE ORDER via singleton OrderHub
+                // OrderHub manages order ID generation and persistence
                 OrderHub orderHub = OrderHub.getOrderHub();
                 Order theOrder = orderHub.newOrder(trolley);
 
-                // Clear trolley
+                // 4b. CLEAR CART - Only after successful order creation
+                // This prevents losing items if order creation fails
                 trolley.clear();
 
-                // Create formatted receipt
+                // 4c. GENERATE FORMATTED RECEIPT
+                // Uses ProductListFormatter for consistent product display
                 StringBuilder receiptBuilder = new StringBuilder();
                 receiptBuilder.append("🎉 ORDER CONFIRMED!\n");
                 receiptBuilder.append("═══════════════════════════\n\n");
@@ -251,14 +280,18 @@ public class CustomerModel {
                 receiptBuilder.append("📧 A confirmation email has been sent.\n");
                 receiptBuilder.append("📱 Track your order using the Order ID.");
 
+                // 4d. UPDATE VIEW STATE
                 displayTaReceipt = receiptBuilder.toString();
                 displayLaSearchResult = "✅ Checkout Successful!\n\nYour order has been processed.\nCheck your receipt for details.";
 
+                // 4e. SET CHECKOUT SUCCESS FLAG
+                // Used by closeReceipt() to show appropriate follow-up message
                 isCheckoutSuccess = true;
                 System.out.println("Checkout successful. Order ID: " + theOrder.getOrderId());
             }
             else{
-                // Handle insufficient stock
+                // 5. HANDLE INSUFFICIENT STOCK SCENARIO
+                // Build detailed error message showing exactly which items are problematic
                 StringBuilder errorMsg = new StringBuilder();
                 errorMsg.append("🚨 Checkout Failed\n\n");
                 errorMsg.append("The following items have insufficient stock:\n\n");
@@ -269,13 +302,15 @@ public class CustomerModel {
                             .append("  Available: ").append(p.getStockQuantity())
                             .append(" | Requested: ").append(p.getOrderedQuantity()).append("\n\n");
 
-                    // Remove insufficient products from trolley
+                    // AUTO-REMOVE: Remove problematic items from cart
+                    // Prevents repeated checkout attempts with same insufficient items
                     trolley.removeIf(item -> item.getProductId().equals(p.getProductId()));
                 }
 
                 errorMsg.append("These items have been removed from your cart.\n");
                 errorMsg.append("Please adjust quantities and try again.");
 
+                // 5a. RESET PRODUCT SELECTION AND DISPLAY ERRORS
                 theProduct = null;
                 displayLaSearchResult = errorMsg.toString();
                 displayTaReceipt = "";
@@ -284,9 +319,13 @@ public class CustomerModel {
             }
         }
         else{
+            // 6. HANDLE EMPTY CART SCENARIO
+            // Prevents processing empty orders
             displayLaSearchResult = "🛒 Empty Cart\n\nYour shopping cart is empty.\n\nAdd some products before checking out.";
             System.out.println("Checkout attempted with empty trolley");
         }
+        // 7. FINAL VIEW UPDATE
+        // Ensures UI reflects the new state (success, error, or empty cart)
         updateView();
     }
 
