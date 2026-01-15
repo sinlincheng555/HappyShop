@@ -20,9 +20,6 @@ import java.sql.SQLException;
  * - ✅ Edit prices
  * - ✅ Delete products
  * - ✅ Full control
- *
- * @author HappyShop Development Team
- * @version 2.0
  */
 public class WarehouseController {
     public WarehouseModel model;

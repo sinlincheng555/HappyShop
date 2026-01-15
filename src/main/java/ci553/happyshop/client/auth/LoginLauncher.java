@@ -13,9 +13,6 @@ import javafx.stage.Stage;
  * 1. Main selection screen → Choose Customer or Warehouse
  * 2. Customer path → Customer login/registration → Customer interface only
  * 3. Warehouse path → Role selection (Staff/Admin) → Warehouse interface with permissions
- *
- * @author HappyShop Development Team
- * @version 2.0
  */
 public class LoginLauncher extends Application {
 

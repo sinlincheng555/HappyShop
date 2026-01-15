@@ -12,9 +12,6 @@ import javafx.application.Application;
  * 1. Launcher → Main.java
  * 2. Main.java → Login screen ONLY
  * 3. Login screen → Appropriate client after authentication
- *
- * @author HappyShop Development Team
- * @version 2.0
  */
 public class Launcher {
     /**

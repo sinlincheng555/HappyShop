@@ -23,9 +23,7 @@ public class WarehouseClient extends Application {
      * Initializes the Warehouse client's Model, View, and Controller
      * Links them together for communication.
      * Creates DatabaseRW instance and injects it into Model.
-     *
-     * FIXED: Proper initialization sequence prevents all common errors
-     */
+    */
     @Override
     public void start(Stage window) {
         System.out.println("=== Starting Warehouse Client ===");

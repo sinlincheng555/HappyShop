@@ -20,9 +20,6 @@ import java.sql.*;
  * Design Pattern: Idempotent Operation
  * - Safe to run multiple times
  * - Only modifies database if needed
- *
- * @author University of Brighton Student
- * @version 1.0
  */
 public class DatabaseMigration {
 

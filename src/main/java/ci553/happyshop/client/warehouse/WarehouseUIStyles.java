@@ -1,7 +1,5 @@
-// ci553/happyshop/client/warehouse/WarehouseUIStyles.java
 package ci553.happyshop.client.warehouse;
 
-import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 
 /**

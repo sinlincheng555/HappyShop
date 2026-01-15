@@ -8,7 +8,6 @@ import java.util.Base64;
 /**
  * PasswordHasher - Secure password hashing using SHA-256 with salt
  * (BCrypt alternative for environments without external libraries)
- *
  */
 public class PasswordHasher {
 
@@ -86,14 +85,4 @@ public class PasswordHasher {
         return Base64.getEncoder().encodeToString(hashedBytes);
     }
 
-
-      //Verify if a stored hash is in the correct format
-
-    public static boolean isValidHashFormat(String hash) {
-        if (hash == null || hash.isEmpty()) {
-            return false;
-        }
-        String[] parts = hash.split(":");
-        return parts.length == 2;
-    }
 }

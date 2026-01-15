@@ -6,9 +6,6 @@ import java.sql.SQLException;
 /**
  * AuthenticationManager - Central authentication system
  * Single pattern for managing user authentication
- *
- * @author HappyShop Development Team
- * @version 2.0
  */
 public class AuthenticationManager {
 
@@ -115,23 +112,6 @@ public class AuthenticationManager {
 
     public User getCurrentUser() {
         return currentUser;
-    }
-
-    /**
-     * Logout current user
-     */
-    public void logout() {
-        if (currentUser != null) {
-            System.out.println("Logout: " + currentUser.getUsername());
-            currentUser = null;
-        }
-    }
-
-    /**
-     * Check if a user is currently logged in
-     */
-    public boolean isLoggedIn() {
-        return currentUser != null;
     }
 
     /**

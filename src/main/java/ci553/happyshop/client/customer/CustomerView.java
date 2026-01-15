@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-  //Modern HappyShop Customer View using CustomerUIStyles
+//Modern HappyShop Customer View using CustomerUIStyles
 
 public class CustomerView {
     public CustomerController cusController;
@@ -503,6 +503,25 @@ public class CustomerView {
         HBox actionButtons = new HBox(SPACE.MD);
         actionButtons.setAlignment(Pos.CENTER_RIGHT);
 
+        Button btnClearCart = new Button("🗑️ Clear Cart");
+        btnClearCart.setStyle(String.format(
+                "-fx-font-family: %s; " +
+                        "-fx-font-size: %f; " +
+                        "-fx-font-weight: %s; " +
+                        "-fx-background-color: %s; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-background-radius: %f; " +
+                        "-fx-padding: %f %f; " +
+                        "-fx-cursor: hand; " +
+                        "-fx-effect: %s; " +
+                        "-fx-border-color: transparent;",
+                TYPO.FONT_PRIMARY, TYPO.BODY, TYPO.MEDIUM,
+                COLORS.ERROR, BORDERS.MD,
+                SPACE.SM, SPACE.LG, SHADOWS.SM
+        ));
+        btnClearCart.setOnAction(this::buttonClicked);
+        setupButtonHover(btnClearCart, "#C62828"); // Darker red for hover
+
         Button btnContinueShopping = new Button("← Continue Shopping");
         btnContinueShopping.setStyle(COMPS.getSecondaryButton());
         btnContinueShopping.setOnAction(this::buttonClicked);
@@ -512,7 +531,7 @@ public class CustomerView {
         btnCheckout.setOnAction(this::buttonClicked);
         setupButtonHover(btnCheckout, "#2AA44F");
 
-        actionButtons.getChildren().addAll(btnContinueShopping, btnCheckout);
+        actionButtons.getChildren().addAll(btnClearCart, btnContinueShopping, btnCheckout);
 
         summary.getChildren().addAll(itemCountRow, totalRow, divider, actionButtons);
         return summary;
@@ -611,6 +630,7 @@ public class CustomerView {
     private String mapButtonToAction(String buttonText) {
         if (buttonText.contains("Search")) return "Search";
         if (buttonText.contains("Add to Cart")) return "Add to Trolley";
+        if (buttonText.contains("Clear Cart")) return "Cancel";
         if (buttonText.contains("Continue Shopping")) return "Cancel";
         if (buttonText.contains("Checkout")) return "Check Out";
         if (buttonText.contains("Back to Shopping")) return "OK & Close";
@@ -712,17 +732,30 @@ public class CustomerView {
     }
 
     // ==================== GETTER METHODS FOR CustomerModel ====================
-     //Get the search prduct ID from the text field
+    /**
+     * Get the search product ID from the text field
+     * @return The trimmed product ID text, or empty string if field is null
+     */
     public String getSearchProductId() {
         return tfId != null ? tfId.getText().trim() : "";
     }
 
-     //Set the product ID field text
-
+    /**
+     * Set the product ID field text
+     * @param productId The product ID to set
+     */
     public void setProductId(String productId) {
         if (tfId != null) {
             tfId.setText(productId);
         }
+    }
+
+    /**
+     * Get the search product name from the text field
+     * @return The trimmed product name text, or empty string if field is null
+     */
+    public String getSearchProductName() {
+        return tfName != null ? tfName.getText().trim() : "";
     }
 
 }

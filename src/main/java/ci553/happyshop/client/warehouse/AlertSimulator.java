@@ -1,6 +1,5 @@
 package ci553.happyshop.client.warehouse;
 
-import ci553.happyshop.utility.WindowBounds;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 

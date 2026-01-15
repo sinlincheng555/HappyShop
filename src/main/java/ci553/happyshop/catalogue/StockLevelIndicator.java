@@ -13,9 +13,6 @@ package ci553.happyshop.catalogue;
  * Design Pattern: Strategy Pattern
  * - Encapsulates stock level calculation algorithm
  * - Allows easy extension for different stock level strategies
- *
- * @author University of Brighton Student
- * @version 2.0
  */
 public class StockLevelIndicator {
 

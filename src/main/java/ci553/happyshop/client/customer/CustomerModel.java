@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-    //the customermodel is the business logic layer in the MVC pattern for the customer shoppign system
+//the customermodel is the business logic layer in the MVC pattern for the customer shoppign system
 
 public class CustomerModel {
     public CustomerView cusView;
@@ -33,18 +33,25 @@ public class CustomerModel {
     private String lastSearchedId = "";
     private boolean isCheckoutSuccess = false;
 
+    /**
+     * Search for products by Product ID or Product Name
+     * Priority: If product name is provided, search by name; otherwise search by ID
+     */
     void search() throws SQLException {
-        // CHANGE THIS LINE:
-        // String productId = cusView.tfId.getText().trim();
-
-        // TO THIS (using the getter method):
         String productId = cusView.getSearchProductId();
+        String productName = cusView.getSearchProductName();
 
-        lastSearchedId = productId;
+        // Determine search term - prioritize name if provided, otherwise use ID
+        String searchTerm = !productName.isEmpty() ? productName : productId;
+        lastSearchedId = searchTerm;
 
-        if(!productId.isEmpty()){
-            theProduct = databaseRW.searchByProductId(productId);
-            if(theProduct != null && theProduct.getStockQuantity() > 0){
+        if(!searchTerm.isEmpty()){
+            // Use the generic searchProduct method which handles both ID and name
+            ArrayList<Product> results = databaseRW.searchProduct(searchTerm);
+
+            if(!results.isEmpty() && results.get(0).getStockQuantity() > 0){
+                theProduct = results.get(0); // Take the first result
+
                 double unitPrice = theProduct.getUnitPrice();
                 String description = theProduct.getProductDescription();
                 int stock = theProduct.getStockQuantity();
@@ -54,7 +61,7 @@ public class CustomerModel {
                 StringBuilder productInfo = new StringBuilder();
                 productInfo.append("✅ Product Found!\n\n");
                 productInfo.append("📦 ").append(description).append("\n");
-                productInfo.append("🏷️  ID: ").append(productId).append("\n");
+                productInfo.append("🏷️  ID: ").append(theProduct.getProductId()).append("\n");
                 productInfo.append("💰 Price: £").append(String.format("%.2f", unitPrice)).append("\n");
 
                 // Stock information with emojis
@@ -73,18 +80,18 @@ public class CustomerModel {
                 // Clear any previous error messages
                 displayTaReceipt = "";
 
-                System.out.println("Product found: " + productId + " - " + description);
+                System.out.println("Product found: " + theProduct.getProductId() + " - " + description);
             }
             else{
                 theProduct = null;
-                if (theProduct == null) {
-                    displayLaSearchResult = "❌ Product Not Found\n\nNo product found with ID: " + productId +
-                            "\n\nPlease check the ID and try again.";
+                if (results.isEmpty()) {
+                    displayLaSearchResult = "❌ Product Not Found\n\nNo product found matching: " + searchTerm +
+                            "\n\nPlease check your search term and try again.";
                 } else {
-                    displayLaSearchResult = "❌ Out of Stock\n\nProduct " + productId +
-                            " is currently out of stock.\n\nPlease check back later or browse other products.";
+                    displayLaSearchResult = "❌ Out of Stock\n\nProduct matching '" + searchTerm +
+                            "' is currently out of stock.\n\nPlease check back later or browse other products.";
                 }
-                System.out.println("No product found or out of stock: " + productId);
+                System.out.println("No product found or out of stock: " + searchTerm);
             }
         } else {
             theProduct = null;
