@@ -43,8 +43,8 @@ public class WarehouseClient extends Application {
 
             // STEP 2: Link components together (CRITICAL ORDER)
             System.out.println("Step 2: Linking components...");
-
             // Link view to controller
+
             view.controller = controller;
             System.out.println("  ✓ View → Controller linked");
 
